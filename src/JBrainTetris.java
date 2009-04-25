@@ -112,7 +112,7 @@ public class JBrainTetris extends JTetris {
 
         
     }
-    public Piece pickNextPiece() {
+    public DisplayPiece pickNextPiece() {
         if(adversary.getValue() == 0 && happy.getValue() == 0) {
             adStat.setText(adversaryOff);
             adHappy.setText(happyOff);
@@ -144,7 +144,7 @@ public class JBrainTetris extends JTetris {
     
     }
     
-    private Piece getWorstPiece(boolean hurt_player) {
+    private DisplayPiece getWorstPiece(boolean hurt_player) {
         Brain.Move wMove = null;
         Brain.Move tMove;
         int index = 0;

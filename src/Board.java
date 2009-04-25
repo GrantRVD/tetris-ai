@@ -17,13 +17,13 @@ import java.util.*;
  @author	Nick Parlante
  @version	1.0, Mar 1, 2001
 */
-public final class Board  {
-	private int width;
-	private int height;
+public class Board  {
+	protected int width;
+	protected int height;
         
-        private int[] widths;
-        private int[] heights;
-	private boolean[][] grid;
+        protected int[] widths;
+        protected int[] heights;
+	protected boolean[][] grid;
         
         private int[] xwidths;
         private int[] xheights;
@@ -34,7 +34,7 @@ public final class Board  {
         
         private boolean fast_undo = true;
         
-        private boolean committed;
+        protected boolean committed;
 		
 	private boolean DEBUG = false;
 	
@@ -337,7 +337,7 @@ public final class Board  {
         
         
 	
-        private void backup() {
+        protected void backup() {
             for(int i = 0; i < width; i++) {
                System.arraycopy(grid[i],0,xgrid[i],0,height);
             }

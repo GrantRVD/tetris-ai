@@ -19,7 +19,7 @@ import java.util.*;
  @author	Nick Parlante
  @version	1.0, Mar 1, 2001
 */
-public final class Piece {
+public class Piece {
 /*
  Implementation notes:
  -The starter code specs out a few simple things, but leaves
@@ -29,13 +29,13 @@ public final class Piece {
  -Do not assume there are 4 points in the body -- use array.length
  to keep the code general
 */
-	private Point[] body;
+	protected Point[] body;
 	private int[] skirt;
-	private int width;
+	protected int width;
 	private int height;
-	private Piece next;	// "next" rotation
+	protected Piece next;	// "next" rotation
 
-	static private Piece[] pieces;	// singleton array of first rotations
+	protected static Piece[] pieces;	// singleton array of first rotations
 
 
 	/**
@@ -46,7 +46,7 @@ public final class Piece {
 	 This constructor is PRIVATE -- if a client
 	 wants a piece object, they must use Piece.getPieces().
 	*/
-	private Piece(Point[] points) {
+	protected Piece(Point[] points) {
             body = new Point[points.length];
             for(int i = 0; i < points.length; i++) {
                 body[i] = new Point();
@@ -172,7 +172,7 @@ public final class Piece {
 	 the points into a Point[] array.
 	 (Provided code)
 	*/
-	private static Point[] parsePoints(String string) {
+	protected static Point[] parsePoints(String string) {
 	    // could use Arraylist here, but use vector so works on Java 1.1
 		Vector points = new Vector();
 		StringTokenizer tok = new StringTokenizer(string);
@@ -204,7 +204,7 @@ public final class Piece {
 	 to detect when the rotations have gotten us back
 	 to the first piece.
 	*/
-	private static Piece pieceRow(Piece root) {
+	protected static Piece pieceRow(Piece root) {
             Piece temp = root;
             Piece prev = root;
             for(;;) {
@@ -227,7 +227,7 @@ public final class Piece {
             return root;
 	}
         
-        private Piece rotatePiece() {
+        protected Piece rotatePiece() {
             Piece piece = null;
             Point[] temp = new Point[body.length];
             // switch x,y to y,x
@@ -247,7 +247,7 @@ public final class Piece {
             return(piece);
         }
 
-        private void setPieceDims() {
+        protected void setPieceDims() {
             int wmax = -1;
             int hmax = -1;
             for(int i = 0; i < body.length; i++){
@@ -258,7 +258,7 @@ public final class Piece {
             height = hmax+1; 
         }
         
-        private void setPieceSkirt() {
+        protected void setPieceSkirt() {
             int wmax = width;
             int hmax;
             

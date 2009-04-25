@@ -52,12 +52,12 @@ public class JTetris extends JComponent {
 	protected boolean DRAW_OPTIMIZE = true;
 	
 	// Board data structures
-	protected Board board;
-	protected Piece[] pieces;
+	protected DisplayBoard board;
+	protected DisplayPiece[] pieces;
 	
 	
 	// The current piece in play or null
-	protected Piece currentPiece;
+	protected DisplayPiece currentPiece;
 	protected int currentX;
 	protected int currentY;
 	protected boolean moved;	// did the player move the piece
@@ -66,7 +66,7 @@ public class JTetris extends JComponent {
 	// The piece we're thinking about playing
 	// -- set by computeNewPosition
 	// (storing this in ivars is slightly questionable style)
-	protected Piece newPiece;
+	protected DisplayPiece newPiece;
 	protected int newX;
 	protected int newY;
 	
@@ -96,8 +96,8 @@ public class JTetris extends JComponent {
 		setPreferredSize(new Dimension(width, height));
 		gameOn = false;
 		
-		pieces = Piece.getPieces();
-		board = new Board(WIDTH, HEIGHT + TOP_SPACE);
+		pieces = DisplayPiece.getPieces();
+		board = new DisplayBoard(WIDTH, HEIGHT + TOP_SPACE);
 
 
 		/*
@@ -189,7 +189,7 @@ public class JTetris extends JComponent {
 	*/
 	public void startGame() {
 		// cheap way to reset the board state
-		board = new Board(WIDTH, HEIGHT + TOP_SPACE);
+		board = new DisplayBoard(WIDTH, HEIGHT + TOP_SPACE);
 		
 		// draw the new board state once
 		repaint();
@@ -240,7 +240,7 @@ public class JTetris extends JComponent {
 	 should be in the committed state when this is called.
 	 Returns the same error code as Board.place().
 	*/
-	public int setCurrent(Piece piece, int x, int y) {
+	public int setCurrent(DisplayPiece piece, int x, int y) {
 		int result = board.place(piece, x, y);
 		
 		if (result <= Board.PLACE_ROW_FILLED) {	// SUCESS
@@ -264,12 +264,12 @@ public class JTetris extends JComponent {
 	 Selects the next piece to use using the random generator
 	 set in startGame().
 	*/
-	public Piece pickNextPiece() {
+	public DisplayPiece pickNextPiece() {
 		int pieceNum;
 		
 		pieceNum = (int) (pieces.length * random.nextDouble());
 		
-		Piece piece  = pieces[pieceNum];
+		DisplayPiece piece  = pieces[pieceNum];
 		
 		return(piece);
 	}
@@ -291,7 +291,7 @@ public class JTetris extends JComponent {
         board.commit();
 		currentPiece = null;
 
-		Piece piece = pickNextPiece();
+		DisplayPiece piece = pickNextPiece();
 		
 		// Center it up at the top
 		int px = (board.getWidth() - piece.getWidth())/2;
@@ -544,11 +544,13 @@ public class JTetris extends JComponent {
 			for (y=0; y<yHeight; y++) {
 				if (board.getGrid(x, y)) {
 					final boolean filled = (board.getRowWidth(y)==bWidth);
+					g.setColor(board.colorGrid[x][y]);
+					
 					if (filled) g.setColor(Color.green);
 					
 					g.fillRect(left+1, yPixel(y)+1, dx, dy);	// +1 to leave a white border
 					
-					if (filled) g.setColor(Color.black);
+					if (filled) g.setColor(Color.blue);
 				}
 			}
 		}
