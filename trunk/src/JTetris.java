@@ -546,11 +546,8 @@ public class JTetris extends JComponent {
 					final boolean filled = (board.getRowWidth(y)==bWidth);
 					g.setColor(board.colorGrid[x][y]);
 					
-					if (filled) g.setColor(Color.green);
-					
 					g.fillRect(left+1, yPixel(y)+1, dx, dy);	// +1 to leave a white border
 					
-					if (filled) g.setColor(Color.blue);
 				}
 			}
 		}
