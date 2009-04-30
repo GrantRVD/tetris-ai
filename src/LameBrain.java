@@ -22,7 +22,7 @@ public class LameBrain implements Brain {
 	public Brain.Move bestMove(Board board, Piece piece, int limitHeight, Brain.Move move) {
 		// Allocate a move object if necessary
 		if (move==null) move = new Brain.Move();
-		
+
 		double bestScore = 1e20;
 		int bestX = 0;
 		int bestY = 0;
