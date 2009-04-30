@@ -17,7 +17,7 @@ import javax.swing.event.*;
  * @version 
  */
 public class JBrainTetris extends JTetris {
-    private Brain mBrain = new LameBrain();
+    private Brain mBrain = new LameBrain2();
     private Brain.Move mMove = new Brain.Move();
     private int cur_count = -1;
     
