@@ -57,6 +57,7 @@ public class JTetris extends JComponent {
 	
 	
 	// The current piece in play or null
+	protected DisplayPiece nextPiece;
 	protected DisplayPiece currentPiece;
 	protected int currentX;
 	protected int currentY;
@@ -202,6 +203,7 @@ public class JTetris extends JComponent {
 		
 		enableButtons();
 		timeLabel.setText(" ");
+		nextPiece = pickNextPiece();
 		addNewPiece();
 		timer.start();
 		startTime = System.currentTimeMillis();
@@ -264,14 +266,8 @@ public class JTetris extends JComponent {
 	 Selects the next piece to use using the random generator
 	 set in startGame().
 	*/
-	public DisplayPiece pickNextPiece() {
-		int pieceNum;
-		
-		pieceNum = (int) (pieces.length * random.nextDouble());
-		
-		DisplayPiece piece  = pieces[pieceNum];
-		
-		return(piece);
+	public DisplayPiece pickNextPiece() {		
+		return pieces[random.nextInt(pieces.length)];
 	}
 	
 			
@@ -291,7 +287,8 @@ public class JTetris extends JComponent {
         board.commit();
 		currentPiece = null;
 
-		DisplayPiece piece = pickNextPiece();
+		DisplayPiece piece = nextPiece;
+		nextPiece = pickNextPiece();
 		
 		// Center it up at the top
 		int px = (board.getWidth() - piece.getWidth())/2;

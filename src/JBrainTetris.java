@@ -31,7 +31,7 @@ public class JBrainTetris extends JTetris {
             board.undo();
             if(verb == DOWN) {
                 if(cur_count != super.count) {
-                    mMove = mBrain.bestMove(board, currentPiece, board.getHeight()-TOP_SPACE, mMove);
+                    mMove = mBrain.bestMove(board, currentPiece, nextPiece, board.getHeight()-TOP_SPACE, mMove);
                     cur_count = super.count;
                 }
                 if(mMove == null || mMove.piece == null || currentPiece == null) {
@@ -149,7 +149,7 @@ public class JBrainTetris extends JTetris {
         Brain.Move tMove;
         int index = 0;
         for(int i = 0; i < pieces.length; i++) {
-            tMove = mBrain.bestMove(board, pieces[i], board.getHeight()-TOP_SPACE, null);
+            tMove = mBrain.bestMove(board, pieces[i], nextPiece, board.getHeight()-TOP_SPACE, null);
             if(i == 0) wMove = tMove;
             if(tMove == null) { // this piece loses the game now
                 return pieces[i];

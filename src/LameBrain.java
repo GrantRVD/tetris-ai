@@ -19,7 +19,7 @@ public class LameBrain implements Brain {
 	 the best play for that piece, or returns null if no play is possible.
 	 See the Brain interface for details.
 	*/
-	public Brain.Move bestMove(Board board, Piece piece, int limitHeight, Brain.Move move) {
+	public Brain.Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight, Brain.Move move) {
 		// Allocate a move object if necessary
 		if (move==null) move = new Brain.Move();
 
