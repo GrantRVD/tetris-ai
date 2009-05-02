@@ -33,6 +33,10 @@ import javax.swing.event.*;
 */
 
 public class JTetris extends JComponent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2288695225264400597L;
 	// size of the board in blocks
 	public static final int WIDTH = 10; //10
 	public static final int HEIGHT = 20; //20
@@ -58,6 +62,7 @@ public class JTetris extends JComponent {
 	
 	// The current piece in play or null
 	protected DisplayPiece nextPiece;
+	PiecePanel nextPiecePanel;
 	protected DisplayPiece currentPiece;
 	protected int currentX;
 	protected int currentY;
@@ -204,6 +209,7 @@ public class JTetris extends JComponent {
 		enableButtons();
 		timeLabel.setText(" ");
 		nextPiece = pickNextPiece();
+		
 		addNewPiece();
 		timer.start();
 		startTime = System.currentTimeMillis();
@@ -289,6 +295,7 @@ public class JTetris extends JComponent {
 
 		DisplayPiece piece = nextPiece;
 		nextPiece = pickNextPiece();
+		nextPiecePanel.setPiece(nextPiece);
 		
 		// Center it up at the top
 		int px = (board.getWidth() - piece.getWidth())/2;
@@ -499,11 +506,12 @@ public class JTetris extends JComponent {
 	public void paintComponent(Graphics g) {
 		
 		// Draw a rect around the whole thing
-		g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+		g.fillRect(0, 0, getWidth()-1, getHeight()-1);
 		
 		
 		// Draw the line separating the top
 		int spacerY = yPixel(board.getHeight() - TOP_SPACE - 1);
+		g.setColor(Color.WHITE);
 		g.drawLine(0, spacerY, getWidth()-1, spacerY);
 
 
@@ -569,7 +577,10 @@ public class JTetris extends JComponent {
 	*/
 	public java.awt.Container createControlPanel() {
 		java.awt.Container panel = Box.createVerticalBox();
-
+		
+		nextPiecePanel = new PiecePanel();
+		panel.add(nextPiecePanel);
+		
 		// COUNT
 		countLabel = new JLabel("0");
 		panel.add(countLabel);
@@ -641,7 +652,7 @@ public class JTetris extends JComponent {
 	public static void main(String[] args)
 	
 	{
-		JFrame frame = new JFrame("Tetris 2002");
+		JFrame frame = new JFrame("Tetris 2002 GJL Edition");
 		JComponent container = (JComponent)frame.getContentPane();
 		container.setLayout(new BorderLayout());
                 
