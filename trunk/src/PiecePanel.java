@@ -27,7 +27,7 @@ public class PiecePanel extends JPanel {
 		if (piece != null) {
 			g.setColor(piece.color);
 			for (Point block : piece.body) {
-				g.fillRect(block.x*(blockSize+2)+blockSize, block.y*(blockSize+2)+blockSize, blockSize, blockSize);
+				g.fillRect(block.x*(blockSize+2)+blockSize, blockSize*3 - block.y*(blockSize+2)+blockSize, blockSize, blockSize);
 			}
 		}
 	}
