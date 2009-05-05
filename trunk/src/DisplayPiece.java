@@ -48,7 +48,7 @@ public class DisplayPiece extends Piece {
 			pieces = new DisplayPiece[] {
 				pieceRow(new DisplayPiece("i", Color.cyan, parsePoints("0 0	0 1	0 2	0 3"))),	// 0
 				pieceRow(new DisplayPiece("j", Color.blue, parsePoints("0 0	0 1	0 2	1 0"))),	// 1
-				pieceRow(new DisplayPiece("l", Color.orange, parsePoints("0 0	1 0	1 1	1 2"))),	// 2
+				pieceRow(new DisplayPiece("l", Color.pink, parsePoints("0 0	1 0	1 1	1 2"))),	// 2
 				pieceRow(new DisplayPiece("z", Color.red, parsePoints("0 0	1 0	1 1	2 1"))),	// 3
 				pieceRow(new DisplayPiece("s", Color.green, parsePoints("0 1	1 1	1 0	2 0"))),	// 4
 				pieceRow(new DisplayPiece("o", Color.yellow, parsePoints("0 0	0 1	1 0	1 1"))),	// 5

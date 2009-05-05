@@ -5,11 +5,13 @@
  */
 
 //package Hw2;
-import java.awt.*;
-import javax.swing.*;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.event.*;
+import java.awt.Dimension;
+
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 
 /**
  *
@@ -21,7 +23,7 @@ public class JBrainTetris extends JTetris {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Brain mBrain = new LameBrain2();
+	private Brain mBrain = new Ply1Brain();
     private Brain.Move mMove = new Brain.Move();
     private int cur_count = -1;
     

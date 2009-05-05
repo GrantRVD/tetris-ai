@@ -1,7 +1,6 @@
 // Board.java
 //package Hw2;
-import java.awt.*;
-import java.util.*;
+import java.awt.Point;
 
 
 /**
