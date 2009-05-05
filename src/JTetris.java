@@ -1,11 +1,29 @@
 // JTetris.java
 //package Hw2;
 
-import java.awt.*;
-import javax.swing.*;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Random;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 
 /**
@@ -61,12 +79,12 @@ public class JTetris extends JComponent {
 	
 	
 	// The current piece in play or null
-	protected DisplayPiece nextPiece;
-	PiecePanel nextPiecePanel;
+	protected DisplayPiece nextPiece; // The piece which will be generated next
+	protected PiecePanel nextPiecePanel; // Displays the nextPiece for the player to see
 	protected DisplayPiece currentPiece;
 	protected int currentX;
 	protected int currentY;
-	protected boolean moved;	// did the player move the piece
+	protected boolean moved;	// If the player moved the piece, true; else false
 	
 	
 	// The piece we're thinking about playing

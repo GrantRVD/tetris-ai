@@ -1,10 +1,16 @@
 // JPieceTest.java
 // package Hw2;
-import java.awt.*;
-import javax.swing.*;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 
 
 

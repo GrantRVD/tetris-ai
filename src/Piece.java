@@ -1,7 +1,10 @@
 // Piece.java
 //package Hw2;
-import java.awt.*;
-import java.util.*;
+import java.awt.Point;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  An immutable representation of a tetris piece in a particular rotation.
