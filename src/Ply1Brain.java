@@ -1,11 +1,9 @@
 
 public class Ply1Brain implements Brain
 {
+	Move move = new Move();
 
-	public Brain.Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight, Brain.Move move) {
-		// Allocate a move object if necessary
-		if (move==null) move = new Brain.Move();
-
+	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
 		double bestScore = 1e20;
 		int bestX = 0;
 		int bestY = 0;

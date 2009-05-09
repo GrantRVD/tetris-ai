@@ -17,8 +17,6 @@ public interface Brain {
 	 The board should be in the committed state when this is called.
 	 "limitHeight" is the bottom section of the board that where pieces must
 	  come to rest -- typically 20.
-	 If the passed in move is non-null, it is used to hold the result
-	 (just to save the memory allocation).
 	*/
-	public Brain.Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight, Brain.Move move);
+	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight);
 }
