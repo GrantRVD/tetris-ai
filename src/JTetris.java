@@ -79,7 +79,7 @@ public class JTetris extends JComponent {
 
 		setPreferredSize(new Dimension(width, height));
 		
-		tc = new TetrisController(this);
+		tc = new TetrisController();
 
 		/*
 		 Register key handlers that call
@@ -166,6 +166,16 @@ public class JTetris extends JComponent {
 
 	void tick(int verb) {
 		tc.tick(verb);
+
+		
+		if (!tc.gameOn) {
+			stopGame();
+		}
+		
+		countLabel.setText(Integer.toString(tc.count));
+		nextPiecePanel.setPiece(tc.nextPiece);
+		
+		repaint();
 	}
 
 	/**
