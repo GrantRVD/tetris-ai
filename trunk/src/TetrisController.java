@@ -35,12 +35,8 @@ public class TetrisController {
 
 	protected Random random;	// the random generator for new pieces
 	
-	JTetris display;
-	
-	TetrisController(JTetris display) {
-		this.display = display;
-		//FIXME quick hack to handle redrawing.
-		
+	TetrisController() {
+
 		gameOn = false;
 		
 		pieces = DisplayPiece.getPieces();
@@ -76,10 +72,6 @@ public class TetrisController {
 		
 		// try out the new position (rolls back if it doesn't work)
 		int result = setCurrent(newPiece, newX, newY);
-		
-		// if row clearing is going to happen, draw the
-		// whole board so the green row shows up
-		if (result ==  Board.PLACE_ROW_FILLED) display.repaint();
 
 		boolean failed = (result >= Board.PLACE_OUT_BOUNDS);
 		
@@ -95,14 +87,11 @@ public class TetrisController {
 		 still moving it),  then the previous position must be the correct
 		 "landed" position, so we're done with the falling of this piece.
 		*/
-		if (failed && verb==DOWN && !moved) {	// it's landed
-			if (board.clearRows()) {
-			    display.repaint();	// repaint to show the result of the row clearing
-			}
-			
+		if (failed && verb==DOWN && !moved) {	// it's landed		
+			board.clearRows();
 			// if the board is too tall, we've lost
 			if (board.getMaxHeight() > board.getHeight() - TOP_SPACE) {
-				display.stopGame();
+				gameOn = false;
 			}
 			// Otherwise add a new piece and keep playing
 			else {
@@ -179,7 +168,7 @@ public class TetrisController {
 		count = 0;
 		gameOn = true;
 
-		random = new Random();	// diff seq each game
+		random = new Random(0);	// diff seq each game
 		
 
 		nextPiece = pickNextPiece();
@@ -202,13 +191,9 @@ public class TetrisController {
 		int result = board.place(piece, x, y);
 		
 		if (result <= Board.PLACE_ROW_FILLED) {	// SUCCESS
-			// repaint the rect where it used to be
-			if (currentPiece != null) display.repaintPiece(currentPiece, currentX, currentY);
 			currentPiece = piece;
 			currentX = x;
 			currentY = y;
-			// repaint the rect where it is now
-			display.repaintPiece(currentPiece, currentX, currentY);
 		}
 		else {
 			board.undo();
@@ -243,7 +228,6 @@ public class TetrisController {
 
 		DisplayPiece piece = nextPiece;
 		nextPiece = pickNextPiece();
-		display.nextPiecePanel.setPiece(nextPiece);
 		
 		// Center it up at the top
 		int px = (board.getWidth() - piece.getWidth())/2;
@@ -256,9 +240,7 @@ public class TetrisController {
 		// the blocks at the top allow space
 		// for new pieces to at least be added.
 		if (result>Board.PLACE_ROW_FILLED) {
-		    display.stopGame();
+			gameOn = false;
 		}
-
-		display.countLabel.setText(Integer.toString(count));
 	}
 }

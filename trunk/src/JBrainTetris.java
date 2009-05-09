@@ -36,9 +36,9 @@ public class JBrainTetris extends JTetris {
         if(brainPlay.isSelected()) {
             tc.board.undo();
             if(verb == TetrisController.DOWN) {
-                if(cur_count != super.tc.count) {
+                if(cur_count != tc.count) {
                     mMove = mBrain.bestMove(tc.board, tc.currentPiece, tc.nextPiece, tc.board.getHeight()-TetrisController.TOP_SPACE);
-                    cur_count = super.tc.count;
+                    cur_count = tc.count;
                 }
                 if(mMove == null || mMove.piece == null || tc.currentPiece == null) {
                     stopGame();
