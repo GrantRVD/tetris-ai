@@ -14,15 +14,14 @@
 */
 //package Hw2;
 public class LameBrain implements Brain {
+	Move move = new Move();
+	
 	/**
 	 Given a piece and a board, returns a move object that represents
 	 the best play for that piece, or returns null if no play is possible.
 	 See the Brain interface for details.
 	*/
-	public Brain.Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight, Brain.Move move) {
-		// Allocate a move object if necessary
-		if (move==null) move = new Brain.Move();
-
+	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
 		double bestScore = 1e20;
 		int bestX = 0;
 		int bestY = 0;

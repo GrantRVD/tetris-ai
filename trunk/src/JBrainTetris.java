@@ -24,7 +24,7 @@ public class JBrainTetris extends JTetris {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Brain mBrain = new Ply1Brain();
-    private Brain.Move mMove = new Brain.Move();
+    private Brain.Move mMove;
     private int cur_count = -1;
     
     /** Creates new JBrainTetris */
@@ -34,20 +34,20 @@ public class JBrainTetris extends JTetris {
     
     public void tick(int verb) {
         if(brainPlay.isSelected()) {
-            board.undo();
-            if(verb == DOWN) {
-                if(cur_count != super.count) {
-                    mMove = mBrain.bestMove(board, currentPiece, nextPiece, board.getHeight()-TOP_SPACE, mMove);
-                    cur_count = super.count;
+            tc.board.undo();
+            if(verb == TetrisController.DOWN) {
+                if(cur_count != super.tc.count) {
+                    mMove = mBrain.bestMove(tc.board, tc.currentPiece, tc.nextPiece, tc.board.getHeight()-TetrisController.TOP_SPACE);
+                    cur_count = super.tc.count;
                 }
-                if(mMove == null || mMove.piece == null || currentPiece == null) {
+                if(mMove == null || mMove.piece == null || tc.currentPiece == null) {
                     stopGame();
                     return; //game over
                 }
-                if(!currentPiece.equals(mMove.piece)) super.tick(ROTATE);
+                if(!tc.currentPiece.equals(mMove.piece)) super.tick(TetrisController.ROTATE);
 
-                if(currentX < mMove.x) super.tick(RIGHT);
-                if(currentX > mMove.x) super.tick(LEFT);
+                if(tc.currentX < mMove.x) super.tick(TetrisController.RIGHT);
+                if(tc.currentX > mMove.x) super.tick(TetrisController.LEFT);
 
             }
         }
@@ -59,17 +59,7 @@ public class JBrainTetris extends JTetris {
 
     
     // Controls
-        protected JSlider adversary;
-        protected JLabel  adStat;
-        protected JSlider happy;
-        protected JLabel  adHappy;
         protected JCheckBox brainPlay;
-        
-        protected String adversaryOn = "Malice Mode On >:-(";
-        protected String adversaryOff = "Malice Mode Off";
-        protected String happyOn = "Happy Mode On :-)";
-        protected String happyOff = "Happy Mode Off";
-        
         
     public java.awt.Container createControlPanel() {
         java.awt.Container panel2 = Box.createVerticalBox();
@@ -78,93 +68,11 @@ public class JBrainTetris extends JTetris {
         
         
         brainPlay = new JCheckBox("Brain Play",false);
-        if(testMode) brainPlay.setSelected(true);
+
         panel2.add(brainPlay);
         
         
-        JPanel row2 = new JPanel();
-        
-         // ADVERSARY slider
-        row2.add(Box.createVerticalStrut(12));
-        row2.add(new JLabel("Adversary:"));
-
-        adversary = new JSlider(0, 100, 0);	// min, max, current
-        adversary.setPreferredSize(new Dimension(100,15));
-        row2.add(adversary);
-        
-        JPanel text = new JPanel();
-        text.add(adStat = new JLabel(adversaryOff));
-        panel2.add(text);
-        
-        panel2.add(row2);
-        
-        JPanel row3 = new JPanel();
-        
-         // Mr. Happy slider
-        row3.add(Box.createVerticalStrut(12));
-        row3.add(new JLabel("Mr. Happy:"));
-
-        happy = new JSlider(0, 100, 0);	// min, max, current
-        happy.setPreferredSize(new Dimension(100,15));
-        row3.add(happy);
-        
-        JPanel text2 = new JPanel();
-        text2.add(adHappy = new JLabel(happyOff));
-        panel2.add(text2);
-        
-        panel2.add(row3);
-        
-        return(panel2);
-
-        
+        return(panel2); 
     }
-    public DisplayPiece pickNextPiece() {
-        if(adversary.getValue() == 0 && happy.getValue() == 0) {
-            adStat.setText(adversaryOff);
-            adHappy.setText(happyOff);
-            return(super.pickNextPiece()); // not to mess with the sequence of random numbers for test mode
-        }
-        
-        if(adversary.getValue() != 0 && happy.getValue() != 0) {
-            adversary.setValue(0);
-            adversary.repaint();
-        }
-            
-        if(random.nextInt(100) <= adversary.getValue()) {
-            adStat.setText(adversaryOn);
-            return getWorstPiece(true);
-        }
-        else
-        {
-            adStat.setText(adversaryOff);
-        }
-        if(random.nextInt(100) <= happy.getValue()) {
-            adHappy.setText(happyOn);
-            return getWorstPiece(false);
-        }
-        else
-        {
-            adHappy.setText(happyOff);
-        }
-        return(super.pickNextPiece());
-    
-    }
-    
-    private DisplayPiece getWorstPiece(boolean hurt_player) {
-        Brain.Move wMove = null;
-        Brain.Move tMove;
-        int index = 0;
-        for(int i = 0; i < pieces.length; i++) {
-            tMove = mBrain.bestMove(board, pieces[i], nextPiece, board.getHeight()-TOP_SPACE, null);
-            if(i == 0) wMove = tMove;
-            if(tMove == null) { // this piece loses the game now
-                return pieces[i];
-            }
-            if((hurt_player && tMove.score >= wMove.score) || (!hurt_player && tMove.score <= wMove.score)) {
-                wMove = tMove;
-                index = i;
-            }
-        }
-        return pieces[index];
-    }
+
 }
