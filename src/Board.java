@@ -33,18 +33,23 @@ public class Board {
 		height = aHeight;
 
 		grid = new boolean[width][height];
-
 		xgrid = new boolean[width][height];
+		
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				grid[x][y] = false;
+				xgrid[x][y] = false;
+			}
+		}
 	}
 	
 	public Board(Board o) {
-		width = o.width;
-		height = o.height;
+		this(o.width, o.height);
 		
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
-				grid[x][y] = o.grid[x][y];
-				xgrid[x][y] = o.xgrid[x][y];
+					grid[x][y] = o.grid[x][y];
+					xgrid[x][y] = o.xgrid[x][y];
 			}
 		}
 		committed = true;
