@@ -9,7 +9,8 @@ public class BrainBenchmark {
 	Brain brainz[] = {
 			new LameBrain(),
 			new LameBrain2(),
-			new Ply1Brain()
+			new Ply1Brain(),
+			new Ply2Brain()
 		};
 	
 	final int SEED = 0;

@@ -17,7 +17,7 @@ public class BoardRater
 		
 	}
 	/**
-	 * This board rater takes into account the number of holes, number of troughs, and various measures of height
+	 * This board rater takes into account the number of holes, number of troughs, max height, minimum heigh, and average height
 	 * to give the board a score.
 	 * @param board
 	 * @return
