@@ -60,7 +60,11 @@ public class DisplayBoard extends Board {
 				cleared = true;
 
 				for (int j = 0; j < width; j++) {
-					grid[j][i] = grid[j][i + 1];
+					//grid[j][i] = grid[j][i + 1];
+					
+					System
+					.arraycopy(grid[j], i + 1, grid[j], i, height - 1
+							- i);
 					grid[j][height - 1] = false;
 					colorGrid[j][i] = colorGrid[j][i + 1];	
 				}

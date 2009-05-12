@@ -5,8 +5,13 @@ import java.util.Random;
  *
  */
 public class BrainBenchmark {
+	class Result {
+		String name;
+		int score;
+	}
+	
 	/* Add your yummy brains here NOM NOM NOM */
-	Brain brainz[] = {
+	static Brain brainz[] = {
 			new LameBrain(),
 			new LameBrain2(),
 			new Ply1Brain(),
@@ -18,8 +23,8 @@ public class BrainBenchmark {
 	BrainBenchmark() {
 	}
 	
-	String[][] computeResults(int seed) {
-		String[][] results = new String[brainz.length][2];
+	Result[] computeResults(int seed) {
+		Result[] results = new Result[brainz.length];
 		
 		TetrisController tc = new TetrisController();
 		
@@ -50,8 +55,9 @@ public class BrainBenchmark {
 
 			}
 			
-			results[i][0] = brainz[i].toString();
-			results[i][1] = Integer.toString(tc.count);
+			results[i] = new Result();
+			results[i].name = brainz[i].toString();
+			results[i].score = tc.count;
 		}
 		
 		return results;
@@ -62,14 +68,28 @@ public class BrainBenchmark {
 	 */
 	public static void main(String[] args) {
 		BrainBenchmark bb = new BrainBenchmark();
-		for (int seed = 0; seed < 10; seed++) {
-			for (String[] result : bb.computeResults(seed)) {
-				for (String col : result) {
-					System.out.print(col + " ");
-				}
-				System.out.println();
+		
+		int sampleSize = 20;
+		
+		int scores[] = new int[brainz.length];
+		
+		for (int seed = 0; seed < sampleSize; seed++) {
+			System.out.println("Seed "+seed);
+			
+			Result[] results = bb.computeResults(seed);
+			
+			for (int i = 0; i < results.length; i++) {
+				System.out.println(results[i].name + " " + results[i].score);
+				scores[i] += results[i].score;
 			}
 		}
+		System.out.println("");
+		
+		System.out.println("Average Scores");
+		for (int i = 0; i < brainz.length; i++) {
+			System.out.println(brainz[i].toString() + " " + (scores[i]/sampleSize));
+		}
+		
 	}
 
 }
