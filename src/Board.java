@@ -38,7 +38,12 @@ public class Board {
 	}
 	
 	public Board(Board o) {
-		this(o.width, o.height);
+		width = o.width;
+		height = o.height;
+		
+		grid = o.grid;
+		xgrid = o.xgrid;
+		committed = true;
 	}
 
 	/**
