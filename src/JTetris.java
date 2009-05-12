@@ -422,7 +422,7 @@ public class JTetris extends JComponent {
 	public static void main(String[] args)
 	
 	{
-		JFrame frame = new JFrame("Tetris 2002 GJL Edition");
+		JFrame frame = new JFrame("TETRIS A.I. Project: CS 175 Spring 2009 UCI");
 		JComponent container = (JComponent)frame.getContentPane();
 		container.setLayout(new BorderLayout());
                 
