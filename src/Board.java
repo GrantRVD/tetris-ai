@@ -41,8 +41,12 @@ public class Board {
 		width = o.width;
 		height = o.height;
 		
-		grid = o.grid;
-		xgrid = o.xgrid;
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				grid[x][y] = o.grid[x][y];
+				xgrid[x][y] = o.xgrid[x][y];
+			}
+		}
 		committed = true;
 	}
 

@@ -18,7 +18,7 @@ public class JBrainTetris extends JTetris {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Brain mBrain = new LameBrain();
+	private Brain mBrain = new Ply2Brain();
 	private Brain.Move mMove;
 
 	/** Creates new JBrainTetris */
