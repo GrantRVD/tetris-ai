@@ -35,7 +35,6 @@ public class TetrisController {
 	protected Random random;	// the random generator for new pieces
 	
 	TetrisController() {
-
 		gameOn = false;
 
 		pieces = DisplayPiece.getPieces();
@@ -167,8 +166,7 @@ public class TetrisController {
 		count = 0;
 		gameOn = true;
 
-		random = new Random(3);	// diff seq each game
-
+		random = new Random();	// diff seq each game
 
 		nextPiece = pickNextPiece();
 
@@ -208,11 +206,6 @@ public class TetrisController {
 	public DisplayPiece pickNextPiece() {	
 		return pieces[random.nextInt(pieces.length)];
 	}
-
-
-
-
-
 
 	/**
 	 Tries to add a new random piece at the top of the board.
