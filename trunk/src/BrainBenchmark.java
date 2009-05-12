@@ -69,7 +69,7 @@ public class BrainBenchmark {
 	public static void main(String[] args) {
 		BrainBenchmark bb = new BrainBenchmark();
 		
-		int sampleSize = 20;
+		int sampleSize = 100;
 		
 		int scores[] = new int[brainz.length];
 		
