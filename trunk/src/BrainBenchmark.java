@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -5,9 +6,10 @@ import java.util.Random;
  *
  */
 public class BrainBenchmark {
-	class Result {
+	static class Result {
 		String name;
-		int score;
+		int score = 0;
+		long thinkTime = 0;
 	}
 	
 	/* Add your yummy brains here NOM NOM NOM */
@@ -33,6 +35,8 @@ public class BrainBenchmark {
 			tc.random = new Random(seed);
 			
 			Brain.Move move = null;
+			
+			Date start = new Date();
 			while(tc.gameOn) {
 				tc.tick(TetrisController.DOWN);
 				
@@ -56,6 +60,7 @@ public class BrainBenchmark {
 			}
 			
 			results[i] = new Result();
+			results[i].thinkTime = (new Date().getTime() - start.getTime());
 			results[i].name = brainz[i].toString();
 			results[i].score = tc.count;
 		}
@@ -69,25 +74,32 @@ public class BrainBenchmark {
 	public static void main(String[] args) {
 		BrainBenchmark bb = new BrainBenchmark();
 		
-		int sampleSize = 100;
+		int sampleSize = 50;
 		
-		int scores[] = new int[brainz.length];
+		Result sums[] = new Result[brainz.length];
+		for (int i = 0; i < sums.length; i++) {
+			sums[i] = new Result();
+		}
 		
 		for (int seed = 0; seed < sampleSize; seed++) {
-			System.out.println("Seed "+seed);
+			System.out.println("Seed "+seed+ " score time");
 			
 			Result[] results = bb.computeResults(seed);
 			
 			for (int i = 0; i < results.length; i++) {
-				System.out.println(results[i].name + " " + results[i].score);
-				scores[i] += results[i].score;
+				System.out.println(results[i].name + " " + results[i].score +
+				" " + results[i].thinkTime
+				);
+				sums[i].score += results[i].score;
+				sums[i].thinkTime += results[i].thinkTime;
 			}
 		}
 		System.out.println("");
 		
 		System.out.println("Average Scores");
 		for (int i = 0; i < brainz.length; i++) {
-			System.out.println(brainz[i].toString() + " " + (scores[i]/sampleSize));
+			System.out.println(brainz[i].toString() + " " + (sums[i].score/sampleSize) + " "
+					+ ((double)sums[i].score / sums[i].thinkTime));
 		}
 		
 	}
