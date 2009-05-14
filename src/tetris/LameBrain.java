@@ -18,62 +18,7 @@ import boardrater.Lame1;
  brain -- just subclass off LameBrain and override rateBoard().
 */
 //package Hw2;
-public class LameBrain implements Brain {
-	Move move = new Move();
+public class LameBrain extends Ply1Brain {
 	BoardRater boardRater = new Lame1();
-	
-	/**
-	 Given a piece and a board, returns a move object that represents
-	 the best play for that piece, or returns null if no play is possible.
-	 See the Brain interface for details.
-	*/
-	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
-		double bestScore = 1e20;
-		int bestX = 0;
-		int bestY = 0;
-		Piece bestPiece = null;
-		Piece current = piece;
-		
-		// loop through all the rotations
-		while (true) {
-			final int yBound = limitHeight - current.getHeight()+1;
-			final int xBound = board.getWidth() - current.getWidth()+1;
-			
-			// For current rotation, try all the possible columns
-			for (int x = 0; x<xBound; x++) {
-				int y = board.dropHeight(current, x);
-				if (y<yBound) {	// piece does not stick up too far
-					int result = board.place(current, x, y);
-					if (result <= Board.PLACE_ROW_FILLED) {
-						if (result == Board.PLACE_ROW_FILLED) board.clearRows();
-						
-						double score = boardRater.rateBoard(board);
-						
-						if (score<bestScore) {
-							bestScore = score;
-							bestX = x;
-							bestY = y;
-							bestPiece = current;
-						}
-					}
-					
-					board.undo();	// back out that play, loop around for the next
-				}
-			}
-			
-			current = current.nextRotation();
-			if (current == piece) break;	// break if back to original rotation
-		}
-		
-		if (bestPiece == null) return(null);	// could not find a play at all!
-		else {
-			move.x=bestX;
-			move.y=bestY;
-			move.piece=bestPiece;
-			move.score = bestScore;
-			return(move);
-		}
-	}
-
 }
 
