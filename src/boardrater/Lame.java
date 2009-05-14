@@ -2,7 +2,7 @@ package boardrater;
 
 import tetris.Board;
 
-public class Lame1 implements BoardRater {
+public class Lame implements BoardRater {
 
 	/*
 	 A simple brain function.

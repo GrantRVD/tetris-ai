@@ -1,7 +1,7 @@
 package tetris;
 
 import boardrater.BoardRater;
-import boardrater.Lame1;
+import boardrater.Lame;
 
 // LameBrain.java
 
@@ -18,7 +18,9 @@ import boardrater.Lame1;
  brain -- just subclass off LameBrain and override rateBoard().
 */
 //package Hw2;
-public class LameBrain extends Ply1Brain {
-	BoardRater boardRater = new Lame1();
+public class Ply1LameBrain extends Ply1Brain {	
+	Ply1LameBrain() {
+		boardRater = new Lame();
+	}
 }
 

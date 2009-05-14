@@ -1,13 +1,12 @@
 package tetris;
 import boardrater.BoardRater;
-import boardrater.Grant1;
 
 
 
 public class Ply1Brain implements Brain
 {
 	Move move = new Move();
-	BoardRater boardRater = new Grant1();
+	BoardRater boardRater;
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
 		double bestScore = 1e20;

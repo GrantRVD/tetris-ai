@@ -2,7 +2,7 @@ package boardrater;
 
 import tetris.Board;
 
-public class Lame2 implements BoardRater {
+public class Leo1 implements BoardRater {
 	
 	/*
 	 * I changed the weights to something I think will work better
