@@ -2,7 +2,7 @@ package tetris;
 import java.util.Date;
 import java.util.Random;
 
-import boardrater.Lame2;
+import boardrater.Leo1;
 
 /**
  * No-frills brain benchmark
@@ -17,11 +17,13 @@ public class BrainBenchmark {
 	
 	/* Add your yummy brains here NOM NOM NOM */
 	static Brain brainz[] = {
-			new LameBrain(),
-			new LameBrain2(),
-			new Ply1Brain(),
-			new Ply2Brain()
+			new Ply1LameBrain(),
+			new Ply1Leo1Brain(),
+			new Ply1Grant1Brain(),
+			new Ply1GeneticBrain()
 		};
+	
+	static final int SAMPLE_SIZE = 100;
 	
 	private int cur_count = -1;
 	
@@ -77,14 +79,12 @@ public class BrainBenchmark {
 	public static void main(String[] args) {
 		BrainBenchmark bb = new BrainBenchmark();
 		
-		int sampleSize = 50;
-		
 		Result sums[] = new Result[brainz.length];
 		for (int i = 0; i < sums.length; i++) {
 			sums[i] = new Result();
 		}
 		
-		for (int seed = 0; seed < sampleSize; seed++) {
+		for (int seed = 0; seed < SAMPLE_SIZE; seed++) {
 			System.out.println("Seed "+seed+ " score time");
 			
 			Result[] results = bb.computeResults(seed);
@@ -101,7 +101,7 @@ public class BrainBenchmark {
 		
 		System.out.println("Average Scores");
 		for (int i = 0; i < brainz.length; i++) {
-			System.out.println(brainz[i].toString() + " " + (sums[i].score/sampleSize) + " "
+			System.out.println(brainz[i].toString() + " " + (sums[i].score/SAMPLE_SIZE) + " "
 					+ ((double)sums[i].score / sums[i].thinkTime));
 		}
 		
