@@ -14,6 +14,8 @@ public class Grant1 implements BoardRater
 	static int minHeight; // The board will never have columns 20 blocks high
 	static Integer[] heights; // For storing each column's height
 	
+	
+	
 	public Grant1()
 	{
 		
