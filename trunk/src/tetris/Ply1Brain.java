@@ -1,4 +1,5 @@
 package tetris;
+import boardrater.BoardRater;
 import boardrater.Grant1;
 
 
@@ -6,6 +7,7 @@ import boardrater.Grant1;
 public class Ply1Brain implements Brain
 {
 	Move move = new Move();
+	BoardRater boardRater = new Grant1();
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
 		double bestScore = 1e20;
@@ -27,7 +29,7 @@ public class Ply1Brain implements Brain
 					if (result <= Board.PLACE_ROW_FILLED) {
 						if (result == Board.PLACE_ROW_FILLED) board.clearRows();
 
-						double score = new Grant1().rateBoard(board);
+						double score = boardRater.rateBoard(board);
 
 						if (score<bestScore) {
 							bestScore = score;

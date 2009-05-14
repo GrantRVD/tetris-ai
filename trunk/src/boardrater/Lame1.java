@@ -13,32 +13,9 @@ public class Lame1 implements BoardRater {
 	 See Tetris-Architecture.html for brain ideas.
 	*/
 	public double rateBoard(Board board) {
-		final int width = board.getWidth();
-		final int maxHeight = board.getMaxHeight();
-		
-		int sumHeight = 0;
-		int holes = 0;
-		
-		// Count the holes, and sum up the heights
-		for (int x=0; x<width; x++) {
-			final int colHeight = board.getColumnHeight(x);
-			sumHeight += colHeight;
-			
-			int y = colHeight - 2;	// addr of first possible hole
-			
-			while (y>=0) {
-				if  (!board.getGrid(x,y)) {
-					holes++;
-				}
-				y--;
-			}
-		}
-		
-		double avgHeight = ((double)sumHeight)/width;
-		
 		// Add up the counts to make an overall score
 		// The weights, 8, 40, etc., are just made up numbers that appear to work
-		return (8*maxHeight + 40*avgHeight + 1.25*holes);	
+		return (8*board.getMaxHeight() + 40*new HeightAvg().rateBoard(board) + 1.25*new Holes1().rateBoard(board));	
 	}
 
 }
