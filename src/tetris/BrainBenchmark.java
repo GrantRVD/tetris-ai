@@ -2,6 +2,8 @@ package tetris;
 import java.util.Date;
 import java.util.Random;
 
+import boardrater.Lame2;
+
 /**
  * No-frills brain benchmark
  *
