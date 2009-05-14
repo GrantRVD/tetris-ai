@@ -1,3 +1,4 @@
+package tetris;
 /*
  * JBrainTetris.java
  *

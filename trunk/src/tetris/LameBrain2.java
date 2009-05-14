@@ -1,3 +1,5 @@
+package tetris;
+
 public class LameBrain2 extends LameBrain {
 	
 	/*

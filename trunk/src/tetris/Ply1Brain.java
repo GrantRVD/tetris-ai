@@ -1,3 +1,7 @@
+package tetris;
+import boardrater.Grant1;
+
+
 
 public class Ply1Brain implements Brain
 {
@@ -23,7 +27,7 @@ public class Ply1Brain implements Brain
 					if (result <= Board.PLACE_ROW_FILLED) {
 						if (result == Board.PLACE_ROW_FILLED) board.clearRows();
 
-						double score = BoardRater.rateBoard(board);
+						double score = new Grant1().rateBoard(board);
 
 						if (score<bestScore) {
 							bestScore = score;
