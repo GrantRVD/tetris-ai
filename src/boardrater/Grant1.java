@@ -1,5 +1,7 @@
+package boardrater;
+import tetris.Board;
 
-public class BoardRater
+public class Grant1 implements BoardRater
 {
 	// All of the fields for this class are static so that a BoardRater does not need to be constructed to rate the board,
 	// but if we did, we would be able to successively call different rating methods on the same board
@@ -12,7 +14,7 @@ public class BoardRater
 	static int minHeight; // The board will never have columns 20 blocks high
 	static Integer[] heights; // For storing each column's height
 	
-	public BoardRater()
+	public Grant1()
 	{
 		
 	}
@@ -22,7 +24,7 @@ public class BoardRater
 	 * @param board
 	 * @return
 	 */
-	public static double rateBoard(Board board)
+	public double rateBoard(Board board)
 	{
 		holes = new Integer[board.getWidth()];
 		troughs = new Integer[board.getWidth()];
