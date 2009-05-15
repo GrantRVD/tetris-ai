@@ -9,10 +9,9 @@ import tetris.Board;
  *
  */
 
-public class Holes2 implements BoardRater {
+public class ConsecHorzHoles extends BoardRater {
 
-	@Override
-	public double rateBoard(Board board) {
+  double rate(Board board) {
 		final int width = board.getWidth();
 		final int maxHeight = board.getMaxHeight();
 		

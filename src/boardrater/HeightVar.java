@@ -1,12 +1,15 @@
 package boardrater;
-
 import tetris.Board;
 
-public class HeightVar implements BoardRater {
-
-	@Override
-	public double rateBoard(Board board) {
-		double avgHeight = new HeightAvg().rateBoard(board);
+public class HeightVar extends BoardRater {
+	double rate(Board board) {
+		int sumHeight = 0;
+		// Count the holes, and sum up the heights
+		for (int x=0; x<board.getWidth(); x++) {
+			final int colHeight = board.getColumnHeight(x);
+			sumHeight += colHeight;
+		}
+		double avgHeight = ((double)sumHeight)/board.getWidth();		
 		
 		// find the variance
 		int varisum = 0;
@@ -18,4 +21,10 @@ public class HeightVar implements BoardRater {
 		return varisum / board.getWidth();
 	}
 
+}
+
+class HeightStdDev extends BoardRater {
+  double rate(Board board) {
+    return Math.sqrt(new HeightVar().rate(board));
+  }
 }
