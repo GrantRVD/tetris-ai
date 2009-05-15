@@ -1,7 +1,7 @@
 package boardrater;
 import tetris.Board;
 
-public class Grant1 implements BoardRater
+public class Grant1 extends BoardRater
 {
 	public Grant1()
 	{
@@ -13,10 +13,10 @@ public class Grant1 implements BoardRater
 	 * @param board
 	 * @return
 	 */
-	public double rateBoard(Board board)
+	double rate(Board board)
 	{	
 		// For this board rating method, the weights are arbitrary, but reflect more or less importance
-		return (20*new HeightMinMax().rateBoard(board) + 25*new HeightAvg().rateBoard(board) + 20*new Holes1().rateBoard(board) + 15*new Trough().rateBoard(board));
+		return (20*new HeightMinMax().rateBoard(board) + 25*new HeightAvg().rateBoard(board) + 20*new SimpleHoles().rateBoard(board) + 15*new Trough().rateBoard(board));
 		
 	}
 }

@@ -2,12 +2,10 @@ package boardrater;
 
 import tetris.Board;
 
-public class Holes1 implements BoardRater {
+public class SimpleHoles extends BoardRater {
 
-	@Override
-	public double rateBoard(Board board) {	
+	double rate(Board board) {	
 		int holes = 0;
-		
 		// Count the holes, and sum up the heights
 		for (int x=0; x<board.getWidth(); x++) {
 			final int colHeight = board.getColumnHeight(x);
@@ -25,3 +23,19 @@ public class Holes1 implements BoardRater {
 	}
 
 }
+
+/*
+class SimpleHoles extends BoardRater {
+  double rate(Board board) {
+		int holeCount   = 0;
+		for(int x=0; x<board.getWidth(); x++) {
+			int y = board.getColumnHeight(x) - 2;
+			while(y>=0) {
+				if(!board.getGrid(x,y))
+					holeCount++;
+				y--;
+			}
+		}
+		return (double) holeCount;
+  }
+}*/
