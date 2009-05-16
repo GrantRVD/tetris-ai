@@ -1,60 +1,52 @@
 package tetris;
+
 import boardrater.BoardRater;
 
-
-
-public class Ply1Brain implements Brain
-{
-	Move move = new Move();
+public class Ply1Brain implements Brain {
 	BoardRater boardRater;
 
-	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
+	public Move bestMove(Board board, Piece piece, Piece nextPiece,
+			int limitHeight) {
 		double bestScore = 1e20;
 		int bestX = 0;
 		int bestY = 0;
-		Piece bestPiece = null;
+		Piece bestPiece = piece;
 		Piece current = piece;
 
 		// loop through all the rotations
-		while (true) {
-			final int yBound = limitHeight - current.getHeight()+1;
-			final int xBound = board.getWidth() - current.getWidth()+1;
+		do {
+			final int yBound = limitHeight - current.getHeight() + 1;
+			final int xBound = board.getWidth() - current.getWidth() + 1;
 
 			// For current rotation, try all the possible columns
-			for (int x = 0; x<xBound; x++) {
+			for (int x = 0; x < xBound; x++) {
 				int y = board.dropHeight(current, x);
-				if (y<yBound) {	// piece does not stick up too far
-					int result = board.place(current, x, y);
-					if (result <= Board.PLACE_ROW_FILLED) {
-						if (result == Board.PLACE_ROW_FILLED) board.clearRows();
+				// piece does not stick up too far
+				if ((y < yBound) && board.canPlace(current, x, y)) {
+					Board testBoard = new Board(board);
+					testBoard.place(current, x, y);
+					testBoard.clearRows();
 
-						double score = boardRater.rateBoard(board);
+					double score = boardRater.rateBoard(testBoard);
 
-						if (score<bestScore) {
-							bestScore = score;
-							bestX = x;
-							bestY = y;
-							bestPiece = current;
-						}
+					if (score < bestScore) {
+						bestScore = score;
+						bestX = x;
+						bestY = y;
+						bestPiece = current;
 					}
-
-					board.undo();	// back out that play, loop around for the next
 				}
 			}
 
 			current = current.nextRotation();
-			if (current == piece) break;	// break if back to original rotation
-		}
+		} while (current != piece);
 
-		if (bestPiece == null) return(null);	// could not find a play at all!
-
-		move.x=bestX;
-		move.y=bestY;
-		move.piece=bestPiece;
-		move.score = bestScore;
-		return(move);
+		Move move = new Move();
+		move.x = bestX;
+		move.y = bestY;
+		move.piece = bestPiece;
+		return (move);
 
 	}
-
 
 }
