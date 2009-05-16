@@ -20,12 +20,11 @@ public class BrainBenchmark {
 			new Ply1LameBrain(),
 			new Ply1Leo1Brain(),
 			new Ply1Grant1Brain(),
-			new Ply1GeneticBrain()
+			new Ply1GeneticBrain(),
+			new Ply2Grant1Brain()
 		};
 	
 	static final int SAMPLE_SIZE = 100;
-	
-	private int cur_count = -1;
 	
 	BrainBenchmark() {
 	}
@@ -36,32 +35,26 @@ public class BrainBenchmark {
 		TetrisController tc = new TetrisController();
 		
 		for (int i = 0; i < brainz.length; i++) {
-			tc.startGame();
-			tc.random = new Random(seed);
-			
-			Brain.Move move = null;
+			tc.startGame(seed);
 			
 			Date start = new Date();
+			
 			while(tc.gameOn) {
-				tc.tick(TetrisController.DOWN);
+				Move move = brainz[i].bestMove(new Board(tc.board), tc.currentMove.piece, tc.nextPiece, tc.board.getHeight()-TetrisController.TOP_SPACE);
 				
-				tc.board.undo();
-
-					if(cur_count != tc.count) {
-						move = brainz[i].bestMove(tc.board, tc.currentPiece, tc.nextPiece, tc.board.getHeight()-TetrisController.TOP_SPACE);
-						cur_count = tc.count;
-					}
+				while (!tc.currentMove.piece.equals(move.piece)) { 
+					tc.tick(TetrisController.ROTATE);
+				}
 				
+				while (tc.currentMove.x != move.x) {
+					tc.tick(((tc.currentMove.x < move.x) ? TetrisController.RIGHT : TetrisController.LEFT));
+				}
 				
-					if(move == null || move.piece == null || tc.currentPiece == null) {
-						tc.gameOn = false;
-						break;
-					}
-					if(!tc.currentPiece.equals(move.piece)) tc.tick(TetrisController.ROTATE);
-
-					if(tc.currentX < move.x) tc.tick(TetrisController.RIGHT);
-					if(tc.currentX > move.x) tc.tick(TetrisController.LEFT);
-
+				int current_count = tc.count;
+				while ((current_count == tc.count) && tc.gameOn) {
+					tc.tick(TetrisController.DOWN);
+				}
+				
 			}
 			
 			results[i] = new Result();

@@ -21,11 +21,6 @@ public class Board {
 
 	protected boolean[][] grid;
 
-	// x____ holds undo values
-	private boolean[][] xgrid;
-
-	protected boolean committed = true;
-
 	/**
 	 * Creates an empty board of the given width and height measured in blocks.
 	 */
@@ -34,12 +29,10 @@ public class Board {
 		height = aHeight;
 
 		grid = new boolean[width][height];
-		xgrid = new boolean[width][height];
 		
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				grid[x][y] = false;
-				xgrid[x][y] = false;
 			}
 		}
 	}
@@ -50,10 +43,8 @@ public class Board {
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
 					grid[x][y] = o.grid[x][y];
-					xgrid[x][y] = o.xgrid[x][y];
 			}
 		}
-		committed = true;
 	}
 
 	/**
@@ -149,11 +140,29 @@ public class Board {
 		return grid[x][y];
 	}
 
-	public static final int PLACE_OK = 0;
-	public static final int PLACE_ROW_FILLED = 1;
-	public static final int PLACE_OUT_BOUNDS = 2;
-	public static final int PLACE_BAD = 3;
-
+	public boolean canPlace(Piece piece, int x, int y) {
+		// might as well do all the error checking at once, since we must leave
+		// the board unchanged if we've got
+		// an out of bounds error - this has the added bonus of not altering the
+		// board on a bad place
+		for (Point block : piece.getBody()) {
+			int putx = x + block.x;
+			int puty = y + block.y;
+			
+			if (putx < 0 
+					|| putx >= width 
+					|| puty < 0 
+					|| ((puty < height) && grid[putx][puty])) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean canPlace(Move move) {
+		return canPlace(move.piece, move.x, move.y);
+	}
+	
 	/**
 	 * Attempts to add the body of a piece to the board. Copies the piece blocks
 	 * into the board grid. Returns PLACE_OK for a regular placement, or
@@ -166,46 +175,20 @@ public class Board {
 	 * the placement is "bad" --interfering with existing blocks in the grid --
 	 * then the placement is halted partially complete and PLACE_BAD is
 	 * returned. An undo() will remove the bad placement.
+	 * @throws Exception 
 	 */
-	public int place(Piece piece, int x, int y) {
-		Point[] body = piece.getBody();
-		int putx;
-		int puty;
-		boolean row_filled = false;
-
-		if (!committed)
-			throw new RuntimeException("Trying to place on uncommited board!!!");
-		committed = false;
-		backup();
-
-		// might as well do all the error checking at once, since we must leave
-		// the board unchanged if we've got
-		// an out of bounds error - this has the added bonus of not altering the
-		// board on a bad place
-		for (int i = 0; i < body.length; i++) {
-			putx = x + body[i].x;
-			puty = y + body[i].y;
-			if (putx < 0 || putx >= width)
-				return PLACE_OUT_BOUNDS;
-			if (puty < 0 || puty >= height)
-				return PLACE_OUT_BOUNDS;
-			if (grid[putx][puty])
-				return PLACE_BAD;
+	public void place(Piece piece, int x, int y) {
+		if (!canPlace(piece, x, y)) {
+			return;
 		}
-		for (int i = 0; i < body.length; i++) {
-			putx = x + body[i].x;
-			puty = y + body[i].y;
-
-			grid[putx][puty] = true;
-			
-			if (getRowCount(puty) >= width)
-				row_filled = true;
-
+		
+		for (Point block : piece.getBody()) {
+			grid[x + block.x][y + block.y] = true;
 		}
-
-		if (row_filled)
-			return PLACE_ROW_FILLED;
-		return PLACE_OK;
+	}
+	
+	public void place(Move move) {
+		place(move.piece, move.x, move.y);
 	}
 
 	/**
@@ -217,16 +200,12 @@ public class Board {
 	 * down to its correct location in one pass. Note that more than one row may
 	 * be filled.
 	 */
-	public boolean clearRows() {
-		boolean cleared = false;
-
-		if (committed)
-			backup(); // not calling immediately after place
-		committed = false;
+	public int clearRows() {
+		int cleared = 0;
 
 		for (int i = 0; i < height; i++) {
 			if (getRowCount(i) >= width) {
-				cleared = true;
+				cleared++;
 
 				for (int j = 0; j < width; j++) {
 					System
@@ -241,36 +220,5 @@ public class Board {
 
 		return cleared;
 
-	}
-
-	/**
-	 * If a place() happens, optionally followed by a clearRows(), a subsequent
-	 * undo() reverts the board to its state before the place(). If the
-	 * conditions for undo() are not met, such as calling undo() twice in a row,
-	 * then the second undo() does nothing. See the overview docs.
-	 */
-	public void undo() {
-		if (!committed) {
-			boolean[][] temp2;
-
-			temp2 = grid;
-			grid = xgrid;
-			xgrid = temp2;
-
-			committed = true;
-		}
-	}
-
-	protected void backup() {
-		for (int i = 0; i < width; i++) {
-			System.arraycopy(grid[i], 0, xgrid[i], 0, height);
-		}
-	}
-
-	/**
-	 * Puts the board in the committed state. See the overview docs.
-	 */
-	public void commit() {
-		committed = true;
 	}
 }

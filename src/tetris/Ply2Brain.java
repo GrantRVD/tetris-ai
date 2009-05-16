@@ -7,88 +7,70 @@ import boardrater.Lame;
 
 public class Ply2Brain implements Brain
 {
-
-	Move move = new Move();
 	BoardRater boardRater;
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
 		double bestScore = 1e20;
 		int bestX = 0;
 		int bestY = 0;
-		Piece bestPiece = null;
+		Piece bestPiece = piece;
+		
 		Piece current = piece;
 		Piece next = nextPiece;
-		Board temp;
 
 		// loop through all the rotations
-		while (true) {
+		do {
 			final int yBound = limitHeight - current.getHeight()+1;
 			final int xBound = board.getWidth() - current.getWidth()+1;
 
 			// For current rotation, try all the possible columns
 			for (int x = 0; x<xBound; x++) {
 				int y = board.dropHeight(current, x);
-				if (y<yBound) {	// piece does not stick up too far
-					int result = board.place(current, x, y);
-					if (result <= Board.PLACE_ROW_FILLED) {
-						if (result == Board.PLACE_ROW_FILLED) board.clearRows();
-
-						double currentScore = boardRater.rateBoard(board);
-						double nextScore;
-						temp = new Board(board);
-						temp.commit();
+				if ((y<yBound) && board.canPlace(current, x, y)) {
+					Board testBoard = new Board(board);
+					testBoard.place(current, x, y);
+					testBoard.clearRows();
 
 						// Everything in this while loop evaluates possible moves with the next piece
-						while(true)
+						do
 						{
 							final int jBound = limitHeight - next.getHeight()+1;
-							final int iBound = temp.getWidth() - next.getWidth()+1;
+							final int iBound = testBoard.getWidth() - next.getWidth()+1;
 							
 							for(int i = 0; i < iBound; i++)
 							{
-								int j = temp.dropHeight(next, i);
-								if(j < jBound) {
-									int r = temp.place(next, i, j);
-									if (r <= Board.PLACE_ROW_FILLED)
-									{
-										if(r == Board.PLACE_ROW_FILLED)
-											temp.clearRows();
+								int j = testBoard.dropHeight(next, i);
+								if(j < jBound && testBoard.canPlace(next, i, j)) {
+									Board temp = new Board(testBoard);
+									temp.place(next, i, j);
+									temp.clearRows();
 										
-										nextScore = boardRater.rateBoard(temp);
+										double nextScore = boardRater.rateBoard(temp);
 										
-										if((currentScore + nextScore) < bestScore)
+										if(nextScore < bestScore)
 										{
-											bestScore = currentScore + nextScore;
+											bestScore = nextScore;
 											bestX = x;
 											bestY = y;
 											bestPiece = current;
 										}
 									}
-									temp.undo();
+
 								}
 
-							}
 							next = next.nextRotation();
-							if(next == nextPiece) break;
-						}
+						} while (next != nextPiece);
 						// Back out to the current piece
 
 					}
-
-					board.undo();	// Reset the board for the next rotation
 				}
-			}
-
 			current = current.nextRotation();
-			if (current == piece) break;	// break if back to original rotation
-		}
+		} while (current != piece);
 
-		if (bestPiece == null) return(null);	// could not find a play at all!
-
+		Move move = new Move();
 		move.x=bestX;
 		move.y=bestY;
 		move.piece=bestPiece;
-		move.score = bestScore;
 		return(move);
 	}
 }

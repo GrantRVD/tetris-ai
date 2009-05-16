@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -55,9 +56,6 @@ public class JTetris extends JComponent {
 	 * 
 	 */
 	private static final long serialVersionUID = -2288695225264400597L;
-	
-	// Is drawing optimized
-	protected boolean DRAW_OPTIMIZE = false;
 	
 	protected PiecePanel nextPiecePanel; // Displays the nextPiece for the player to see
 	
@@ -184,9 +182,8 @@ public class JTetris extends JComponent {
 	 so the game is happening.
 	*/
 	public void startGame() {
-		
 		tc.startGame();
-		
+			
 		// draw the new board state once
 		repaint();
 		
@@ -218,24 +215,6 @@ public class JTetris extends JComponent {
 		long delta = (System.currentTimeMillis() - startTime)/10;
 		timeLabel.setText(Double.toString(delta/100.0) + " seconds");
 
-	}
-
-	/**
-	 Given a piece and a position for the piece, generates
-	 a repaint for the rectangle that just encloses the piece.
-	*/
-	public void repaintPiece(Piece piece, int x, int y) {
-		if (DRAW_OPTIMIZE) {
-			int px = xPixel(x);
-			int py = yPixel(y + piece.getHeight() - 1);
-			int pwidth = xPixel(x+piece.getWidth()) - px;
-			int pheight = yPixel(y-1) - py;
-			
-			repaint(px, py, pwidth, pheight);
-		}
-		else {
-			repaint();
-		}
 	}
 	
 	
@@ -286,24 +265,14 @@ public class JTetris extends JComponent {
 		
 		
 		// Draw the line separating the top
-		int spacerY = yPixel(tc.board.getHeight() - TetrisController.TOP_SPACE - 1);
+		int spacerY = yPixel(tc.displayBoard.getHeight() - TetrisController.TOP_SPACE - 1);
 		g.setColor(Color.WHITE);
-		g.drawLine(0, spacerY, getWidth()-1, spacerY);
-
-
-        // check if we are drawing with clipping
-		//Shape shape = g.getClip();
-		Rectangle clip = null;
-		if (DRAW_OPTIMIZE) {
-			clip = g.getClipBounds();
-		}
-		
-		
+		g.drawLine(0, spacerY, getWidth()-1, spacerY);		
 		
 		// Factor a few things out to help the optimizer
 		final int dx = Math.round(dX()-2);
 		final int dy = Math.round(dY()-2);
-		final int bWidth = tc.board.getWidth();
+		final int bWidth = tc.displayBoard.getWidth();
 
 		int x, y;
 		// Loop through and draw all the blocks
@@ -311,19 +280,11 @@ public class JTetris extends JComponent {
 		for (x=0; x<bWidth; x++) {
 			int left = xPixel(x);	// the left pixel
 			
-			// right pixel (useful for clip optimization)
-			int right = xPixel(x+1) -1;
-			
-			// skip this x if it is outside the clip rect
-			if (DRAW_OPTIMIZE && clip!=null) {
-				if ((right<clip.x) || (left>=(clip.x+clip.width))) continue;
-			}
-			
 			// draw from 0 up to the col height
-			final int yHeight = tc.board.getColumnHeight(x);
+			final int yHeight = tc.displayBoard.getColumnHeight(x);
 			for (y=0; y<yHeight; y++) {
-				if (tc.board.getGrid(x, y)) {
-					g.setColor(tc.board.colorGrid[x][y]);
+				if (tc.displayBoard.getGrid(x, y)) {
+					g.setColor(tc.displayBoard.colorGrid[x][y]);
 					g.fillRect(left+1, yPixel(y)+1, dx, dy);	// +1 to leave a white border
 					
 				}

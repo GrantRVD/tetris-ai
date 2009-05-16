@@ -12,22 +12,18 @@ public class TetrisController {
 	public static final int TOP_SPACE = 4;
 
 	// Board data structures
-	protected DisplayBoard board;
+	protected DisplayBoard displayBoard;
+	DisplayBoard board;
 	protected DisplayPiece[] pieces;
 
 	// The current piece in play or null
 	protected DisplayPiece nextPiece; // The piece which will be generated next
-	protected DisplayPiece currentPiece;
-	protected int currentX;
-	protected int currentY;
-	protected boolean moved;	// If the player moved the piece, true; else false
+	Move currentMove;
 
 	// The piece we're thinking about playing
 	// -- set by computeNewPosition
 	// (storing this in ivars is slightly questionable style)
-	protected DisplayPiece newPiece;
-	protected int newX;
-	protected int newY;
+	Move nextMove;
 
 	// State of the game
 	protected boolean gameOn;	// true if we are playing
@@ -40,6 +36,7 @@ public class TetrisController {
 
 		pieces = DisplayPiece.getPieces();
 		board = new DisplayBoard(WIDTH, HEIGHT + TOP_SPACE);
+		displayBoard = new DisplayBoard(board);
 	}
 
 	public static final int ROTATE = 0;
@@ -58,27 +55,13 @@ public class TetrisController {
 	 This advances the piece to be at its next location.
 
 	 Overriden by the brain when it plays.
+	 * @throws Exception 
 	 */
 	public void tick(int verb) {
 		if (!gameOn) return;
 
-		if (currentPiece != null) {
-			board.undo();	// remove the piece from its old position
-		}
-
 		// Sets the newXXX ivars
-		computeNewPosition(verb);
-
-		// try out the new position (rolls back if it doesn't work)
-		int result = setCurrent(newPiece, newX, newY);
-
-		boolean failed = (result >= Board.PLACE_OUT_BOUNDS);
-
-		// if it didn't work, put it back the way it was
-		if (failed) {
-			if (currentPiece != null) board.place(currentPiece, currentX, currentY);
-		}
-
+		Move newMove = computeNewPosition(verb);
 		/*
 		 How to detect when a piece has landed:
 		 if this move hits something on its DOWN verb,
@@ -86,21 +69,22 @@ public class TetrisController {
 		 still moving it),  then the previous position must be the correct
 		 "landed" position, so we're done with the falling of this piece.
 		 */
-		if (failed && verb==DOWN && !moved) {	// it's landed		
+		if (board.canPlace(newMove)) {
+			currentMove = newMove;
+			displayBoard = new DisplayBoard(board);
+			displayBoard.place(currentMove);
+		} else if (verb==DOWN) {	// it's landed
+			board.place(currentMove);
+			
 			board.clearRows();
 			// if the board is too tall, we've lost
 			if (board.getMaxHeight() > board.getHeight() - TOP_SPACE) {
 				gameOn = false;
 			}
-			// Otherwise add a new piece and keep playing
-			else {
+			else {// Otherwise add a new piece and keep playing
 				addNewPiece();
 			}
 		}
-
-		// Note if the player made a successful non-DOWN move --
-		// used to detect if the piece has landed on the next tick()
-		moved = (!failed && verb!=DOWN);
 	}
 
 	/**
@@ -116,11 +100,12 @@ public class TetrisController {
 	 (Storing an intermediate result like that in
 	 ivars is a little tacky.)
 	 */
-	public void computeNewPosition(int verb) {
+	public Move computeNewPosition(int verb) {
 		// As a starting point, the new position is the same as the old
-		newPiece = currentPiece;
-		newX = currentX;
-		newY = currentY;
+		
+		Piece newPiece = currentMove.piece;
+		int newX = currentMove.x;
+		int newY = currentMove.y;
 
 		// Make changes based on the verb
 		switch (verb) {
@@ -134,8 +119,8 @@ public class TetrisController {
 			// tricky: make the piece appear to rotate about its center
 			// can't just leave it at the same lower-left origin as the
 			// previous piece.
-			newX = newX + (currentPiece.getWidth() - newPiece.getWidth())/2;
-			newY = newY + (currentPiece.getHeight() - newPiece.getHeight())/2;
+			newX = newX + (currentMove.piece.getWidth() - newPiece.getWidth())/2;
+			newY = newY + (currentMove.piece.getHeight() - newPiece.getHeight())/2;
 			break;
 
 		case DOWN: newY--; break;
@@ -145,14 +130,21 @@ public class TetrisController {
 
 			// trick: avoid the case where the drop would cause
 			// the piece to appear to move up
-			if (newY > currentY) {
-				newY = currentY;
+			if (newY > currentMove.y) {
+				newY = currentMove.y;
 			}
 			break;
 
 		default:
 			throw new RuntimeException("Bad verb");
 		}
+		
+		Move newMove = new Move();
+		newMove.piece = newPiece;
+		newMove.x = newX;
+		newMove.y = newY;
+		
+		return newMove;
 
 	}
 
@@ -161,43 +153,36 @@ public class TetrisController {
 	 so the game is happening.
 	 */
 	public void startGame() {
+		random = new Random();	// diff seq each game
+		
 		// cheap way to reset the board state
 		board = new DisplayBoard(WIDTH, HEIGHT + TOP_SPACE);
 
 		count = 0;
 		gameOn = true;
 
-		random = new Random();	// diff seq each game
-
 		nextPiece = pickNextPiece();
 
 		addNewPiece();
 
 	}
-
-
+	
 	/**
-	 Given a piece, tries to install that piece
-	 into the board and set it to be the current piece.
-	 Does the necessary repaints.
-	 If the placement is not possible, then the placement
-	 is undone, and the board is not changed. The board
-	 should be in the committed state when this is called.
-	 Returns the same error code as Board.place().
+	 Sets the internal state and starts the timer
+	 so the game is happening.
 	 */
-	public int setCurrent(DisplayPiece piece, int x, int y) {
-		int result = board.place(piece, x, y);
+	public void startGame(int seed) {
+		random = new Random(seed);	// diff seq each game
+		
+		// cheap way to reset the board state
+		board = new DisplayBoard(WIDTH, HEIGHT + TOP_SPACE);
 
-		if (result <= Board.PLACE_ROW_FILLED) {	// SUCCESS
-			currentPiece = piece;
-			currentX = x;
-			currentY = y;
-		}
-		else {
-			board.undo();
-		}
+		count = 0;
+		gameOn = true;
 
-		return(result);
+		nextPiece = pickNextPiece();
+
+		addNewPiece();
 	}
 
 	/**
@@ -215,24 +200,17 @@ public class TetrisController {
 	public void addNewPiece() {
 		count++;
 
-		// commit things the way they are
-		board.commit();
-		currentPiece = null;
-
-		DisplayPiece piece = nextPiece;
-		nextPiece = pickNextPiece();
-
 		// Center it up at the top
-		int px = (board.getWidth() - piece.getWidth())/2;
-		int py = board.getHeight() - piece.getHeight();
-
-		// add the new piece to be in play
-		int result = setCurrent(piece, px, py);
-
-		// This probably never happens, since
-		// the blocks at the top allow space
-		// for new pieces to at least be added.
-		if (result>Board.PLACE_ROW_FILLED) {
+		Move newMove = new Move();
+		newMove.piece = nextPiece;
+		newMove.x = (board.getWidth() - newMove.piece.getWidth())/2;
+		newMove.y = board.getHeight() - newMove.piece.getHeight();
+		
+		nextPiece = pickNextPiece();
+		
+		if (board.canPlace(newMove)) {
+			currentMove = newMove;
+		} else {
 			gameOn = false;
 		}
 	}
