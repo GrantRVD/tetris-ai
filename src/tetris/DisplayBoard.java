@@ -22,6 +22,19 @@ public class DisplayBoard extends Board {
 		}
 	}
 	
+	public DisplayBoard clone() {
+		DisplayBoard cloned = new DisplayBoard(width, height);
+		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+					cloned.grid[x][y] = grid[x][y];
+					cloned.colorGrid[x][y] = colorGrid[x][y];
+			}
+		}
+		
+		return cloned;
+	}
+	
 	public void place(DisplayPiece piece, int x, int y) {
 		if (!canPlace(piece, x, y)) {
 			return;
