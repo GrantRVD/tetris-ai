@@ -5,7 +5,7 @@ import boardrater.Lame;
 
 
 
-public class Ply2Brain implements Brain
+public abstract class Ply2Brain implements Brain
 {
 	BoardRater boardRater;
 

@@ -2,7 +2,7 @@ package tetris;
 
 import boardrater.BoardRater;
 
-public class Ply1Brain implements Brain {
+public abstract class Ply1Brain implements Brain {
 	BoardRater boardRater;
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece,

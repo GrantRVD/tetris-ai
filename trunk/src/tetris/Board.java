@@ -46,6 +46,18 @@ public class Board {
 			}
 		}
 	}
+	
+	public Board clone() {
+		Board cloned = new Board(width, height);
+		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+					cloned.grid[x][y] = grid[x][y];
+			}
+		}
+		
+		return cloned;
+	}
 
 	/**
 	 * Returns the width of the board in blocks.

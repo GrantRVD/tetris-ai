@@ -20,11 +20,6 @@ public class TetrisController {
 	protected DisplayPiece nextPiece; // The piece which will be generated next
 	Move currentMove;
 
-	// The piece we're thinking about playing
-	// -- set by computeNewPosition
-	// (storing this in ivars is slightly questionable style)
-	Move nextMove;
-
 	// State of the game
 	protected boolean gameOn;	// true if we are playing
 	protected int count;		// how many pieces played so far
@@ -61,7 +56,7 @@ public class TetrisController {
 		if (!gameOn) return;
 
 		// Sets the newXXX ivars
-		Move newMove = computeNewPosition(verb);
+		Move newMove = computeNewPosition(verb, currentMove);
 		/*
 		 How to detect when a piece has landed:
 		 if this move hits something on its DOWN verb,
@@ -100,7 +95,7 @@ public class TetrisController {
 	 (Storing an intermediate result like that in
 	 ivars is a little tacky.)
 	 */
-	public Move computeNewPosition(int verb) {
+	public Move computeNewPosition(int verb, Move currentMove) {
 		// As a starting point, the new position is the same as the old
 		
 		Piece newPiece = currentMove.piece;

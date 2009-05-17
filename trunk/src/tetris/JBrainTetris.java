@@ -19,9 +19,6 @@ import javax.swing.JCheckBox;
  * @version
  */
 public class JBrainTetris extends JTetris {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Brain mBrain = new Ply2Grant1Brain();
 	private Move mMove;
@@ -65,16 +62,11 @@ public class JBrainTetris extends JTetris {
 		}
 	}
 
-	// Controls
-	protected JCheckBox brainPlay;
 
 	public java.awt.Container createControlPanel() {
 		java.awt.Container panel2 = Box.createVerticalBox();
 		panel2 = super.createControlPanel();
 
-		brainPlay = new JCheckBox("Brain Play", false);
-
-		panel2.add(brainPlay);
 
 		return (panel2);
 	}
