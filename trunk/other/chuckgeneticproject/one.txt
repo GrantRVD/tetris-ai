@@ -1,0 +1,9 @@
+# instance by G2
+# solution = 110
+# many solutions! Some are 001, 000, 011, 110.
+# Takes about 2ms with Population size=300, but only zero to one if P=3.
+3 4 3
+3 -2 1 
+-1 3 2 
+-1 2 -3 
+-1 -3 -2 

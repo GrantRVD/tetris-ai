@@ -1,0 +1,14 @@
+# instance by G2
+# solution = 10010
+# many solutions! My program gets any one of them. One is 01001!
+# Takes 0-2ms depending on population size. Zero ms if P=3; 2ms if P=300.
+5 9 3
+4 3 -1 
+1 -4 3 
+3 -1 -2 
+4 -1 -3 
+2 3 -5 
+4 2 3 
+-2 -3 -5 
+-4 -2 -3 
+-1 2 -3 
