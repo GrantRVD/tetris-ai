@@ -39,4 +39,9 @@ public class FinalRater extends BoardRater {
      score += FinalRater.raters[x].rateBoard(board)*this.coefficients[x];
    return score;
  }
+ 
+ double rate(Board board, double[] coefficients) {
+   this.coefficients = coefficients;
+   return this.rate(board);
+ }
 }
