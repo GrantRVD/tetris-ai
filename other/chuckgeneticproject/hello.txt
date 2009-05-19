@@ -1,0 +1,7 @@
+#input
+#this is the one from the assignment's word file.
+	3 4 3
+	-3 -2 1
+	-1 3 -2
+	2 -3 -1 
+	1 3 2
