@@ -12,21 +12,21 @@ public class TetrisController {
 	public static final int TOP_SPACE = 4;
 
 	// Board data structures
-	protected DisplayBoard displayBoard;
-	DisplayBoard board;
-	protected DisplayPiece[] pieces;
+	public DisplayBoard displayBoard;
+	public DisplayBoard board;
+	public DisplayPiece[] pieces;
 
 	// The current piece in play or null
-	protected DisplayPiece nextPiece; // The piece which will be generated next
-	Move currentMove;
+	public DisplayPiece nextPiece; // The piece which will be generated next
+	public Move currentMove;
 
 	// State of the game
-	protected boolean gameOn;	// true if we are playing
-	protected int count;		// how many pieces played so far
+	public boolean gameOn;	// true if we are playing
+	public int count;		// how many pieces played so far
 
-	protected Random random;	// the random generator for new pieces
+	public Random random;	// the random generator for new pieces
 	
-	TetrisController() {
+	public TetrisController() {
 		gameOn = false;
 
 		pieces = DisplayPiece.getPieces();

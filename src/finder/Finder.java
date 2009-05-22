@@ -2,7 +2,7 @@ package finder;
 import boardrater.*;
 import tetris.*;
 import java.util.Random;
-
+import java.util.Date;
 //For simplicity, I'm limiting the range of weights to between zero and ten.
 //They're all doubles anyway, so it shouldn't matter what the actual upper bound is.
 //It just can't be infinitely variable, because there'd be an infinite number of
@@ -17,18 +17,21 @@ public class Finder {
     f.go();
   }
   
-  FinalRater rater = new FinalRater();
+  FinalRater rater = new FinalRater();                    //This is used solely by the fitnessOf method to simulate a game with a given kid. (Each kid is a list of weights, remember.)
+  Brain raterUser;                                        //This is used solely by the fitnessOf method to simulate a game with the rater.
+  TetrisController controller = new TetrisController();   //This is used solely by the fitnessOf method to simulate a game with the brain.
   int NUM_KIDS   = 200;                   //This is the population size. I picked 200 because it feels like a nice number.
   int numWeights = -1;                    //This is the number of weights, derived straight from the FinalRater class in the boardrater package.
   double[][] pop;                         //This is the actual population - the list of lists of weights.
   double[][] nextPop;
-  double[] fitnesses;                     //This is the list of fitnesses obtained after each generation, used to sort.
+  int[] fitnesses;                        //This is the list of fitnesses obtained after each generation, used to sort.
   Random randy = new Random();            //random generator
   
   public Finder() {
     this.numWeights = FinalRater.raters.length;
     this.pop = new double[this.NUM_KIDS][this.numWeights];
     this.nextPop = new double[this.NUM_KIDS][this.numWeights];
+    this.raterUser = new Ply2AnyBrain(this.rater);
   }
   
   void go() {
@@ -101,13 +104,6 @@ public class Finder {
     return kid;
   }
   
-  int fitnessOf(double[] kid) {
-    //todo make a tetris controller and use it to evaluate a kid in this method.
-    //do this by setting the coefficients of the FinalRater to the kid, and giving the
-    //FinalRater to the TetrisController so the brain can use it to play the game.
-    return 1;
-  }
-  
   void getFitnesses() {
     for(int i=0; i<NUM_KIDS; i++) {
       fitnesses[i] = fitnessOf(pop[i]);
@@ -130,7 +126,7 @@ public class Finder {
     int hi = starthi;
     if(hi-1==lo) {                            //handle the case where we swap only a two-element list
       if(fitnesses[lo]>fitnesses[hi]) {
-        double temp = fitnesses[lo];             //swap!
+        int temp = fitnesses[lo];             //swap!
         fitnesses[lo] = fitnesses[hi];
         fitnesses[hi] = temp;
         double[] tempkid = pop[lo];          //also swap the kids themselves... not only the fitnesses.
@@ -139,7 +135,7 @@ public class Finder {
       }
       return;                                 //get out if we just finished swapping the only two things in the list.
     }
-    double piv = fitnesses[(lo+hi)/2];           //choose pivot
+    int piv = fitnesses[(lo+hi)/2];           //choose pivot
     fitnesses[(lo+hi)/2] = fitnesses[hi];     //...and swap it away for now
     fitnesses[hi] = piv;
     double[] Kidpivot = pop[(lo+hi)/2];      //now swap the kids to stay aligned!
@@ -151,7 +147,7 @@ public class Finder {
       while(piv<=fitnesses[hi] && lo<hi)      //go down from hi till smaller is found...
         hi--;
       if(lo<hi) {                             //swap lo and hi if out of order
-        double temp = fitnesses[lo];
+        int temp = fitnesses[lo];
         fitnesses[lo] = fitnesses[hi];
         fitnesses[hi] = temp;
         double[] tempkid = pop[lo];          //now swap the kids!
@@ -165,6 +161,29 @@ public class Finder {
     pop[hi] = Kidpivot;
     quicksortByFitness(startlo,lo-1);       //Recurse now that we're sorted around the pivot.
     quicksortByFitness(hi+1,starthi);
+  }
+  
+  int fitnessOf(double[] kid) {
+    //todo make a tetris controller and use it to evaluate a kid in this method.
+    //do this by setting the coefficients of the FinalRater to the kid, and giving the
+    //FinalRater to the TetrisController so the brain can use it to play the game.
+		TetrisController tc = controller;
+		
+		int seed = 0; //todo perhaps find a better seed? probably doesn't matter.
+		
+		tc.startGame(seed);
+
+		Date start = new Date();
+
+		while (tc.gameOn) {
+			Move move = raterUser.bestMove(new Board(tc.board), tc.currentMove.piece, tc.nextPiece, tc.board.getHeight() - TetrisController.TOP_SPACE);
+			while (!tc.currentMove.piece.equals(move.piece)) tc.tick(TetrisController.ROTATE);
+			while (tc.currentMove.x != move.x) tc.tick(((tc.currentMove.x < move.x) ? TetrisController.RIGHT : TetrisController.LEFT));
+			int current_count = tc.count;
+			while ((current_count == tc.count) && tc.gameOn) tc.tick(TetrisController.DOWN);
+		}
+
+		return tc.count;
   }
 }
 
