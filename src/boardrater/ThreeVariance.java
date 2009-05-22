@@ -3,7 +3,7 @@ import tetris.Board;
 
 //This rater returns the average of all the variances of height in all groups of three adjacent columns.
 //If this is factored into the utility function, it will discourage brains from having wildly varying heights across the board.
-public class ThreeVariance {
+public class ThreeVariance extends BoardRater {
   double rate(Board board) {
     int w = board.getWidth();
     double runningVarianceSum = 0.0;

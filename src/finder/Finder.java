@@ -11,15 +11,15 @@ import java.util.Random;
 //Kids are lists of doubles (lists of weights).
 //Fitnesses are ints, and higher is better.
 
-public class Finder() {  
+public class Finder {  
   public static void main(String[] args) {
     Finder f = new Finder();
     f.go();
   }
   
   FinalRater rater = new FinalRater();
-  NUM_KIDS   = 200;                       //This is the population size. I picked 200 because it feels like a nice number.
-  numWeights = -1;                        //This is the number of weights, derived straight from the FinalRater class in the boardrater package.
+  int NUM_KIDS   = 200;                   //This is the population size. I picked 200 because it feels like a nice number.
+  int numWeights = -1;                    //This is the number of weights, derived straight from the FinalRater class in the boardrater package.
   double[][] pop;                         //This is the actual population - the list of lists of weights.
   double[][] nextPop;
   double[] fitnesses;                     //This is the list of fitnesses obtained after each generation, used to sort.
@@ -41,7 +41,7 @@ public class Finder() {
     int count = 0;                            //It works by starting with the most fit and using appropriate mating/mutation methods to
     for(int i=0; i<NUM_KIDS; i++) {           //gradually fill up the nextPop array with the new children.
       if(i<NUM_KIDS*0.3) {                    //afterwards, it swaps nextPop with pop, gets the fitnesses of the new population, and then sorts.
-        nextPop[count] = mateKids(pop[i]+pop[i+1]);
+        nextPop[count] = mateKids(pop[i],pop[i+1]);
         count++;                              //After this method, the population is in the same state it was in before this method was called.
       }
       else if(i>=NUM_KIDS*0.3) {
@@ -57,8 +57,8 @@ public class Finder() {
     temp = pop;
     pop = nextPop;
     nextPop = temp;
-    getFitnesses();                           //figure out what all the fitnesses of the children are.
-    quicksortByFitnesses();                   //sort the new population, to put the most fit children in the front of the list for the next generation.
+    getFitnesses();                          //figure out what all the fitnesses of the children are.
+    quicksortByFitness();                    //sort the new population, to put the most fit children in the front of the list for the next generation.
   }
   
   double[] newRandomKid() {                  //This method generates a new random child. Each child is a list of weights.
@@ -79,7 +79,7 @@ public class Finder() {
   double[] mutateKid(double[] kid) {      //This slightly tweaks all of the parameters in the kid. DOES NOT CREATE A COPY.
     for(int i=0; i<numWeights; i++)
       kid[i] += randy.nextDouble()*0.3-0.15;  //Add a random number between -0.15 and 0.15 to each value in the kid.
-    return kid
+    return kid;
   }
   
   double[] tweakKid(double[] kid) {       //This slightly tweaks ONE of the parameters in the kid. DOES NOT CREATE A COPY.
@@ -110,7 +110,7 @@ public class Finder() {
   
   void getFitnesses() {
     for(int i=0; i<NUM_KIDS; i++) {
-      fitnesses[i] = fitnessOf(i);
+      fitnesses[i] = fitnessOf(pop[i]);
     }
   }
   
@@ -130,19 +130,19 @@ public class Finder() {
     int hi = starthi;
     if(hi-1==lo) {                            //handle the case where we swap only a two-element list
       if(fitnesses[lo]>fitnesses[hi]) {
-        int temp = fitnesses[lo];             //swap!
+        double temp = fitnesses[lo];             //swap!
         fitnesses[lo] = fitnesses[hi];
         fitnesses[hi] = temp;
-        boolean[] tempkid = pop[lo];          //also swap the kids themselves... not only the fitnesses.
+        double[] tempkid = pop[lo];          //also swap the kids themselves... not only the fitnesses.
         pop[lo] = pop[hi];
         pop[hi] = tempkid;
       }
       return;                                 //get out if we just finished swapping the only two things in the list.
     }
-    int piv = fitnesses[(lo+hi)/2];           //choose pivot
+    double piv = fitnesses[(lo+hi)/2];           //choose pivot
     fitnesses[(lo+hi)/2] = fitnesses[hi];     //...and swap it away for now
     fitnesses[hi] = piv;
-    boolean[] Kidpivot = pop[(lo+hi)/2];      //now swap the kids to stay aligned!
+    double[] Kidpivot = pop[(lo+hi)/2];      //now swap the kids to stay aligned!
     pop[(lo+hi)/2] = pop[hi];
     pop[hi] = Kidpivot;
     while(lo<hi) {
@@ -151,10 +151,10 @@ public class Finder() {
       while(piv<=fitnesses[hi] && lo<hi)      //go down from hi till smaller is found...
         hi--;
       if(lo<hi) {                             //swap lo and hi if out of order
-        int temp = fitnesses[lo];
+        double temp = fitnesses[lo];
         fitnesses[lo] = fitnesses[hi];
         fitnesses[hi] = temp;
-        boolean[] tempkid = pop[lo];          //now swap the kids!
+        double[] tempkid = pop[lo];          //now swap the kids!
         pop[lo] = pop[hi];
         pop[hi] = tempkid;
       }
@@ -163,8 +163,8 @@ public class Finder() {
     fitnesses[hi] = piv;
     pop[starthi] = pop[hi];
     pop[hi] = Kidpivot;
-    quicksortAllThemKids(startlo,lo-1);       //Recurse now that we're sorted around the pivot.
-    quicksortAllThemKids(hi+1,starthi);
+    quicksortByFitness(startlo,lo-1);       //Recurse now that we're sorted around the pivot.
+    quicksortByFitness(hi+1,starthi);
   }
 }
 

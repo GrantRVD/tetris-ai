@@ -12,7 +12,7 @@ import tetris.Board;
 //So, I don't know how long-lived this file will be.
 
 public class FinalRater extends BoardRater {
- static BoardRater raters[] = //staticness prevents these raters from getting instantiated over and over and over and over again... this'll save garbage collection time.
+ public static BoardRater raters[] = //staticness prevents these raters from getting instantiated over and over and over and over again... this'll save garbage collection time.
  {
    new ConsecHorzHoles(),
    new HeightAvg(),
@@ -26,14 +26,17 @@ public class FinalRater extends BoardRater {
    new WeightedHoles()
  };
  
- double[] coefficients;
+ double[] coefficients = {1,1,1,1,1,1,1,1,1,1}; //default weights. replace these with the ones obtained from the genetic algorithm.
  
  public FinalRater() {
    //if this constructor is used, then the overloaded rate(board,coeffs) method will have to be used in order to supply a list of weights
  }
  
  public FinalRater(double[] c) {
-   if(c.length!=FinalRater.raters.length) throw new Exception("Make sure that the array passed into the FinalRater has the correct number of coefficients!");
+   if(c.length!=FinalRater.raters.length) {
+     System.out.println("Make sure that the array passed into the FinalRater has the correct number of coefficients! Using DEFAULT COEFFICIENTS instead!");
+     return;
+   }
    this.coefficients = c;
  }
  
