@@ -28,6 +28,10 @@ public class FinalRater extends BoardRater {
  
  double[] coefficients;
  
+ public FinalRater() {
+   //if this constructor is used, then the overloaded rate(board,coeffs) method will have to be used in order to supply a list of weights
+ }
+ 
  public FinalRater(double[] c) {
    if(c.length!=FinalRater.raters.length) throw new Exception("Make sure that the array passed into the FinalRater has the correct number of coefficients!");
    this.coefficients = c;
