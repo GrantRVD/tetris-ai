@@ -1,11 +1,9 @@
 package tetris;
 
-import boardrater.BoardRater;
-import boardrater.Genetic;
-import boardrater.Leo1;
+import boardrater.*;
 
 public class Ply1GeneticBrain extends Ply1Brain {
 	Ply1GeneticBrain() {
-		boardRater = new Genetic();
+		boardRater = new FinalRater();
 	}
 }
