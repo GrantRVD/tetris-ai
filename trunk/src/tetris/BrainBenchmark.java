@@ -23,7 +23,8 @@ public class BrainBenchmark {
 		new Ply1Leo1Brain(), 
 		new Ply1Grant1Brain(),
 		new Ply1GeneticBrain(),
-		new Ply2Grant1Brain()
+		new Ply2Grant1Brain(),
+		new Ply2HandTunedBrain()
 	};
 
 	static final int SAMPLE_SIZE = 5;
