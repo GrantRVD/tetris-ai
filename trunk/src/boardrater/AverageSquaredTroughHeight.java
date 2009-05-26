@@ -13,7 +13,7 @@ public class AverageSquaredTroughHeight extends BoardRater {
     for(x=1; x<w-1; x++) {
       troughs[x] = (temp=(     ((temp2=(board.getColumnHeight(x+1)-board.getColumnHeight(x)))  >  (temp3=(board.getColumnHeight(x-1)-board.getColumnHeight(x))))    ?temp3:temp2))>0?temp:0;
     }
-    troughs[w] = ((temp=board.getColumnHeight(w-1)-board.getColumnHeight(w))>0)?temp:0;
+    troughs[w-1] = ((temp=board.getColumnHeight(w-2)-board.getColumnHeight(w-1))>0)?temp:0;
     double average = 0.0;
     for(x=0; x<w; x++)
       average+=troughs[x]*troughs[x];

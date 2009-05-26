@@ -1,5 +1,5 @@
-import boardrater.*;
 package tetris;
+import boardrater.*;
 
 public class Ply2HandTunedBrain extends Ply2Brain {
 	Ply2HandTunedBrain() {
