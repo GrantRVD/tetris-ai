@@ -14,19 +14,22 @@ import tetris.Board;
 public class FinalRater extends BoardRater {
  public static BoardRater raters[] = //staticness prevents these raters from getting instantiated over and over and over and over again... this'll save garbage collection time.
  {
-   new ConsecHorzHoles(),
-   new HeightAvg(),
-   new HeightMax(),
-   new HeightMinMax(),
-   new HeightVar(),
-   new Lame(),
-   new SimpleHoles(),
-   new ThreeVariance(),
-   new Trough(),
-   new WeightedHoles()
+    new ConsecHorzHoles(),
+    new HeightAvg(),
+    new HeightMax(),
+    new HeightMinMax(),
+    new HeightVar(),
+    new HeightStdDev(),
+    new SimpleHoles(),
+    new ThreeVariance(),
+    new Trough(),
+    new WeightedHoles(),
+    new RowsWithHolesInMostHoledColumn(),
+    new AverageSquaredTroughHeight(),
+    new BlocksAboveHoles()
  };
  
- double[] coefficients = {1,1,1,1,1,1,1,1,1,1}; //default weights. replace these with the ones obtained from the genetic algorithm.
+ double[] coefficients = {1,1,1,1,1,1,1,1,1,1,1,1,1}; //default weights. replace these with the ones obtained from the genetic algorithm.
  
  public FinalRater() {
    //if this constructor is used, then the overloaded rate(board,coeffs) method will have to be used in order to supply a list of weights
