@@ -46,8 +46,8 @@ public class FinalRater extends BoardRater {
   };
    
  public FinalRater() {
-   System.out.println("new final rater:");
-   String temp;
+   // System.out.println("new final rater:");
+   // String temp;
    // for(int i=0; i<raters.length; i++) {
    //   System.out.println((temp=""+coefficients[i]).substring(0,temp.length()>=4?temp.length():3)+"\t\t"+raters[i]);
    // }
