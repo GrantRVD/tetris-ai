@@ -17,7 +17,7 @@ public class SingleBrainTest {
 	}
 
 	/* Add your yummy brain here NOM NOM NOM */
-	static Brain brain = new Ply2HandTunedBrain();
+	static Brain brain = new Ply2FinalRaterBrain();
 
 	static final int SAMPLE_SIZE = 5;
 
@@ -52,7 +52,7 @@ public class SingleBrainTest {
 				tc.tick(TetrisController.DOWN);
 			}
       
-      if((tempTime=System.nanoTime()) - lastDisplay > 500000000) {
+      if((tempTime=System.nanoTime()) - lastDisplay > 2000000000) {
         lastDisplay = tempTime;
         System.out.print("..."+tc.count);
       }
