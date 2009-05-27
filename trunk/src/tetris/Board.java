@@ -20,7 +20,7 @@ public class Board {
 	protected int height;
 
 	protected boolean[][] grid;
-
+  
 	/**
 	 * Creates an empty board of the given width and height measured in blocks.
 	 */
@@ -59,6 +59,13 @@ public class Board {
 		return cloned;
 	}
 
+  public void makeDirty() {
+    maxHeightDirty = true;
+    for(int i=0; i<10; i++) {
+      columnHeightDirties[i] = true;
+    }
+  }
+
 	/**
 	 * Returns the width of the board in blocks.
 	 */
@@ -77,13 +84,17 @@ public class Board {
 	 * Returns the max column height present in the board. For an empty board
 	 * this is 0.
 	 */
+	private boolean maxHeightDirty = true;
+	private int _maxHeight = -1;
 	public int getMaxHeight() {
+	  if(!maxHeightDirty) return _maxHeight;
+	  maxHeightDirty = false;
 		int max = 0;
 		for (int i = 0; i < width; i++) {
 			if (getColumnHeight(i) > max)
 				max = getColumnHeight(i);
 		}
-		return max;
+		return (_maxHeight = max);
 
 	}
 
@@ -115,13 +126,17 @@ public class Board {
 	 * Returns the height of the given column -- i.e. the y value of the highest
 	 * block + 1. The height is 0 if the column contains no blocks.
 	 */
+	private boolean[] columnHeightDirties = {true,true,true,true,true,true,true,true,true,true};
+	private int[] _columnHeights = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 	public int getColumnHeight(int x) {
+	    if(!columnHeightDirties[x]) return _columnHeights[x];
+      columnHeightDirties[x] = false;
 			for (int j = height - 1; j >= 0; j--) {
 				if (grid[x][j]) {
-					return j + 1;
+					return (_columnHeights[x] = j+1);
 				}
 			}
-			return 0;
+			return (_columnHeights[x] = 0);
 	}
 
 	/**
@@ -193,7 +208,7 @@ public class Board {
 		if (!canPlace(piece, x, y)) {
 			return;
 		}
-		
+		makeDirty();
 		for (Point block : piece.getBody()) {
 			grid[x + block.x][y + block.y] = true;
 		}
@@ -229,7 +244,7 @@ public class Board {
 				i--;
 			}
 		}
-
+    makeDirty();
 		return cleared;
 
 	}
