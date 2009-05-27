@@ -41,16 +41,16 @@ public class FinalRater extends BoardRater {
 /*new Trough(),*/                         1,
 /*new WeightedHoles(),*/                  4,
 /*new RowsWithHolesInMostHoledColumn()*/  4,
-/*new AverageSquaredTroughHeight()*/      10,
+/*new AverageSquaredTroughHeight()*/      15,
 /*new BlocksAboveHoles()*/                2
   };
    
  public FinalRater() {
    System.out.println("new final rater:");
    String temp;
-   for(int i=0; i<raters.length; i++) {
-     System.out.println((temp=""+coefficients[i]).substring(0,temp.length()>=4?temp.length():3)+"\t\t"+raters[i]);
-   }
+   // for(int i=0; i<raters.length; i++) {
+   //   System.out.println((temp=""+coefficients[i]).substring(0,temp.length()>=4?temp.length():3)+"\t\t"+raters[i]);
+   // }
  }
  
  public FinalRater(double[] c) {

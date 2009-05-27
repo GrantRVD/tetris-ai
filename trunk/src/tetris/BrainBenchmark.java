@@ -22,9 +22,8 @@ public class BrainBenchmark {
     new Ply1LameBrain(), 
     new Ply1Leo1Brain(),
     new Ply1Grant1Brain(),
-    new Ply1GeneticBrain(),
-    new Ply2Grant1Brain(),
-    new Ply2HandTunedBrain()
+    // new Ply2Grant1Brain(), //disabled because the two-ply brains are so slow; to test this, use SingleBrainTest.
+    new Ply1FinalRaterBrain()
 	};
 
 	static final int SAMPLE_SIZE = 5;
