@@ -29,10 +29,28 @@ public class FinalRater extends BoardRater {
     new BlocksAboveHoles()
  };
  
- double[] coefficients = {1,1,1,1,1,1,1,1,1,1,1,1,1}; //default weights. replace these with the ones obtained from the genetic algorithm.
- 
+  double[] coefficients = {
+/*new ConsecHorzHoles(),*/                0,  
+/*new HeightAvg(),*/                      10,
+/*new HeightMax(),*/                      1,
+/*new HeightMinMax(),*/                   1,
+/*new HeightVar(),*/                      0,
+/*new HeightStdDev(),*/                   5,
+/*new SimpleHoles(),*/                    40,
+/*new ThreeVariance(),*/                  10,
+/*new Trough(),*/                         1,
+/*new WeightedHoles(),*/                  4,
+/*new RowsWithHolesInMostHoledColumn()*/  4,
+/*new AverageSquaredTroughHeight()*/      10,
+/*new BlocksAboveHoles()*/                2
+  };
+   
  public FinalRater() {
-   //if this constructor is used, then the overloaded rate(board,coeffs) method will have to be used in order to supply a list of weights
+   System.out.println("new final rater:");
+   String temp;
+   for(int i=0; i<raters.length; i++) {
+     System.out.println((temp=""+coefficients[i]).substring(0,temp.length()>=4?temp.length():3)+"\t\t"+raters[i]);
+   }
  }
  
  public FinalRater(double[] c) {
@@ -44,9 +62,11 @@ public class FinalRater extends BoardRater {
  }
  
  double rate(Board board) {
-   double score = 0;
-   for (int x=0; x<raters.length; x++)
-     score += FinalRater.raters[x].rate(board)*this.coefficients[x];
+   double score = 0, temp;
+   for (int x=0; x<raters.length; x++) {
+     score += (temp=this.coefficients[x])==0?0:temp*FinalRater.raters[x].rate(board);
+     // System.out.print(this.coefficients[x]);
+   }
    return score;
  }
  
