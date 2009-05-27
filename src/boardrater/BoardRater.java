@@ -11,9 +11,11 @@ public abstract class BoardRater {
   abstract double rate(Board board);
   public double rateBoard(Board board) {
     this.callCount++;
+    board.enableCaching();
     long start = System.nanoTime();
     double ret = this.rate(board);
     this.runTime += System.nanoTime()-start;
+    board.disableCaching();
     return ret;
   }
 }

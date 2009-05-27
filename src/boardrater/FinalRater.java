@@ -46,7 +46,7 @@ public class FinalRater extends BoardRater {
  double rate(Board board) {
    double score = 0;
    for (int x=0; x<raters.length; x++)
-     score += FinalRater.raters[x].rateBoard(board)*this.coefficients[x];
+     score += FinalRater.raters[x].rate(board)*this.coefficients[x];
    return score;
  }
  

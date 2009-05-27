@@ -18,7 +18,7 @@ import java.awt.Point;
 public class Board {
 	protected int width; // width of the board
 	protected int height;
-
+  private boolean caching = false;
 	protected boolean[][] grid;
   
 	/**
@@ -66,6 +66,15 @@ public class Board {
     }
   }
 
+  //CACHING CAN ONLY BE ENABLED WHILE A BOARDRATER IS READING THE BOARD. I couldn't figure out where to mark the caches as outdated, so I just make sure caching is only enabled in read-only situations.
+  public void enableCaching() {
+    caching = true;
+    makeDirty();
+  }
+  public void disableCaching() {
+    caching = false;
+  }
+
 	/**
 	 * Returns the width of the board in blocks.
 	 */
@@ -87,7 +96,7 @@ public class Board {
 	private boolean maxHeightDirty = true;
 	private int _maxHeight = -1;
 	public int getMaxHeight() {
-	  if(!maxHeightDirty) return _maxHeight;
+    if(caching && !maxHeightDirty) return _maxHeight;
 	  maxHeightDirty = false;
 		int max = 0;
 		for (int i = 0; i < width; i++) {
@@ -129,7 +138,9 @@ public class Board {
 	private boolean[] columnHeightDirties = {true,true,true,true,true,true,true,true,true,true};
 	private int[] _columnHeights = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 	public int getColumnHeight(int x) {
-	    if(!columnHeightDirties[x]) return _columnHeights[x];
+      if(caching && !columnHeightDirties[x]) {
+        return _columnHeights[x];
+      }
       columnHeightDirties[x] = false;
 			for (int j = height - 1; j >= 0; j--) {
 				if (grid[x][j]) {
@@ -190,25 +201,10 @@ public class Board {
 		return canPlace(move.piece, move.x, move.y);
 	}
 	
-	/**
-	 * Attempts to add the body of a piece to the board. Copies the piece blocks
-	 * into the board grid. Returns PLACE_OK for a regular placement, or
-	 * PLACE_ROW_FILLED for a regular placement that causes at least one row to
-	 * be filled.
-	 * 
-	 * <p>
-	 * Error cases: If part of the piece would fall out of bounds, the placement
-	 * does not change the board at all, and PLACE_OUT_BOUNDS is returned. If
-	 * the placement is "bad" --interfering with existing blocks in the grid --
-	 * then the placement is halted partially complete and PLACE_BAD is
-	 * returned. An undo() will remove the bad placement.
-	 * @throws Exception 
-	 */
 	public void place(Piece piece, int x, int y) {
 		if (!canPlace(piece, x, y)) {
 			return;
 		}
-		makeDirty();
 		for (Point block : piece.getBody()) {
 			grid[x + block.x][y + block.y] = true;
 		}
@@ -244,7 +240,6 @@ public class Board {
 				i--;
 			}
 		}
-    makeDirty();
 		return cleared;
 
 	}

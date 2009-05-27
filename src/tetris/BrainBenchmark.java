@@ -18,13 +18,13 @@ public class BrainBenchmark {
 
 	/* Add your yummy brains here NOM NOM NOM */
 	static Brain brainz[] = { 
-		new PlyNGrant1Brain(1, DisplayPiece.getPieces()),
-		new Ply1LameBrain(), 
-		new Ply1Leo1Brain(), 
-		new Ply1Grant1Brain(),
-		new Ply1GeneticBrain(),
-		new Ply2Grant1Brain(),
-		new Ply2HandTunedBrain()
+    new PlyNGrant1Brain(1, DisplayPiece.getPieces()),
+    new Ply1LameBrain(), 
+    new Ply1Leo1Brain(),
+    new Ply1Grant1Brain(),
+    new Ply1GeneticBrain(),
+    new Ply2Grant1Brain(),
+    new Ply2HandTunedBrain()
 	};
 
 	static final int SAMPLE_SIZE = 5;
