@@ -19,7 +19,7 @@ public class SingleBrainTest {
 	/* Add your yummy brain here NOM NOM NOM */
 	static Brain brain = new Ply2FinalRaterBrain();
 
-	static final int SAMPLE_SIZE = 5;
+	static final int SAMPLE_SIZE = 1;
 
 	SingleBrainTest() {
 	}
@@ -74,7 +74,7 @@ public class SingleBrainTest {
 
     Result sum = new Result();
 
-		for (int seed = 0; seed < SAMPLE_SIZE; seed++) {
+		for (int seed = 4; seed < SAMPLE_SIZE+4; seed++) {
 			System.out.println("Seed " + seed + " score time");
 
 			Result result = bb.computeResult(seed);
