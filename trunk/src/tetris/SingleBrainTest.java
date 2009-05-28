@@ -2,6 +2,7 @@ package tetris;
 
 import java.util.Date;
 import java.util.Random;
+import java.lang.*;
 
 import boardrater.Leo1;
 
@@ -19,7 +20,7 @@ public class SingleBrainTest {
 	/* Add your yummy brain here NOM NOM NOM */
 	static Brain brain = new Ply2FinalRaterBrain();
 
-	static final int SAMPLE_SIZE = 5;
+	static final int SAMPLE_SIZE = 1;
 
 	SingleBrainTest() {
 	}
@@ -52,7 +53,7 @@ public class SingleBrainTest {
 				tc.tick(TetrisController.DOWN);
 			}
       
-      if((tempTime=System.nanoTime()) - lastDisplay > 2000000000) {
+      if((tempTime=System.nanoTime()) - lastDisplay > 500000000) {
         lastDisplay = tempTime;
         System.out.print("..."+tc.count);
       }
@@ -71,25 +72,19 @@ public class SingleBrainTest {
 	 */
 	public static void main(String[] args) {
 		SingleBrainTest bb = new SingleBrainTest();
+		int seed = 0;
+    if(args.length==1) seed = Integer.parseInt(args[0]);
 
-    Result sum = new Result();
+		System.out.println("Running with seed " + seed+":");
 
-		for (int seed = 0; seed < SAMPLE_SIZE; seed++) {
-			System.out.println("Seed " + seed + " score time");
+		Result result = bb.computeResult(seed);
 
-			Result result = bb.computeResult(seed);
-
-			System.out.println(result.name + " " + result.score
-					+ " " + result.thinkTime);
-			sum.score += result.score;
-			sum.thinkTime += result.thinkTime;
-		}
 		System.out.println("");
 
-		System.out.println("Average Score");
+		System.out.println("Performance:");
 		System.out.println(brain.toString() + " "
-				+ (sum.score / SAMPLE_SIZE) + " "
-				+ ((double) sum.score / sum.thinkTime));
+				+ (result.score) + " "
+				+ ((double) result.score / result.thinkTime));
 
 	}
 

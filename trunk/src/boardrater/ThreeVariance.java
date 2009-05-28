@@ -7,7 +7,7 @@ public class ThreeVariance extends BoardRater {
   double rate(Board board) {
     int w = board.getWidth();
     double runningVarianceSum = 0.0;
-    for(int i=0; i<w-3; i++) {
+    for(int i=0; i<w-2; i++) {
       double  h0 = (double)board.getColumnHeight(i),
               h1 = (double)board.getColumnHeight(i+1),
               h2 = (double)board.getColumnHeight(i+2);
