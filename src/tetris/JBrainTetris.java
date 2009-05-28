@@ -20,7 +20,7 @@ import javax.swing.JCheckBox;
  */
 public class JBrainTetris extends JTetris {
 	private static final long serialVersionUID = 1L;
-	private Brain mBrain = new Ply2FinalRaterBrain();
+	private Brain mBrain = new Ply2FinalRaterBrain();//new PlyNFinalRaterBrain(3, DisplayPiece.getPieces());
 	private Move mMove;
 	protected javax.swing.Timer timerAI;
 	int current_count = -1;
@@ -31,7 +31,7 @@ public class JBrainTetris extends JTetris {
 		
 		// Create the Timer object and have it send
 		// tick(DOWN) periodically
-		timerAI = new javax.swing.Timer(50, new ActionListener() {
+		timerAI = new javax.swing.Timer(0, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tickAI();
 			}
