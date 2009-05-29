@@ -18,7 +18,7 @@ public class SingleBrainTest {
 	}
 
 	/* Add your yummy brain here NOM NOM NOM */
-	static Brain brain = new Ply2FinalRaterBrain();
+	static Brain brain = new Ply2Brain();
 
 	static final int SAMPLE_SIZE = 1;
 

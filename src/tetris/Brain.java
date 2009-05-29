@@ -1,4 +1,5 @@
 package tetris;
+import boardrater.BoardRater;
 // Brain.java -- the interface for Tetris brains
 //package Hw2;
 public interface Brain {
@@ -11,4 +12,6 @@ public interface Brain {
 	  come to rest -- typically 20.
 	*/
 	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight);
+	
+	public void setRater(BoardRater r);
 }
