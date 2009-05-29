@@ -1,11 +1,11 @@
 package tetris;
 
 import java.util.LinkedList;
-import boardrater.BoardRater;
+import boardrater.*;
 
-public abstract class PlyNBrain implements Brain {
+public class PlyNBrain implements Brain {
 	Piece[] possiblePieces;
-	BoardRater boardRater;
+	BoardRater boardRater = new SimpleHoles();
 	int level = 0;
 
 	class Score {
@@ -105,5 +105,14 @@ public abstract class PlyNBrain implements Brain {
 		}
 
 		return scores;
+	}
+	
+	/**
+	 * This method defines how the brain will rate the board. This method can be used to reset the boardRater
+	 * during testing, without needing to explicitly change code.
+	 */
+	public void setRater(BoardRater r)
+	{
+		boardRater = r;
 	}
 }

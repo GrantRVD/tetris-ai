@@ -1,9 +1,9 @@
 package tetris;
 
-import boardrater.BoardRater;
+import boardrater.*;
 
-public abstract class Ply1Brain implements Brain {
-	BoardRater boardRater;
+public class Ply1Brain implements Brain {
+	BoardRater boardRater = new SimpleHoles(); // Defines the default rater for this brain
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece,
 			int limitHeight) {
@@ -47,6 +47,15 @@ public abstract class Ply1Brain implements Brain {
 		move.piece = bestPiece;
 		return (move);
 
+	}
+	
+	/**
+	 * This method defines how the brain will rate the board. This method can be used to reset the boardRater
+	 * during testing, without needing to explicitly change code.
+	 */
+	public void setRater(BoardRater r)
+	{
+		boardRater = r;
 	}
 
 }

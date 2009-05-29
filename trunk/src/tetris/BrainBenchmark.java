@@ -2,6 +2,7 @@ package tetris;
 
 import java.util.Date;
 import java.util.Random;
+import boardrater.*;
 
 import boardrater.Leo1;
 
@@ -11,19 +12,37 @@ import boardrater.Leo1;
  */
 public class BrainBenchmark {
 	static class Result {
-		String name;
+		String brainName;
+		String raterName;
 		int score = 0;
 		long thinkTime = 0;
 	}
 
 	/* Add your yummy brains here NOM NOM NOM */
 	static Brain brainz[] = { 
-    new PlyNGrant1Brain(1, DisplayPiece.getPieces()),
-    new Ply1LameBrain(), 
-    new Ply1Leo1Brain(),
-    new Ply1Grant1Brain(),
-    // new Ply2Grant1Brain(), //disabled because the two-ply brains are so slow; to test this, use SingleBrainTest.
-    new Ply1FinalRaterBrain()
+    new Ply1Brain(), 
+    new Ply2Brain(),
+    new PlyNBrain()
+	};
+	
+	static BoardRater raterz[] ={
+		new Grant1(),
+		new AverageSquaredTroughHeight(),
+		new BlocksAboveHoles(),
+		new ConsecHorzHoles(),
+		new HeightAvg(),
+		new HeightMax(),
+		new HeightMinMax(),
+		new HeightStdDev(),
+		new HeightVar(),
+		new Lame(),
+		new Leo1(),
+		new RowsWithHolesInMostHoledColumn(),
+		new SimpleHoles(),
+		new ThreeVariance(),
+		new Trough(),
+		new WeightedHoles(),
+		new FinalRater()
 	};
 
 	static final int SAMPLE_SIZE = 5;
@@ -37,6 +56,8 @@ public class BrainBenchmark {
 		TetrisController tc = new TetrisController();
 
 		for (int i = 0; i < brainz.length; i++) {
+			for(int j = 0; j < raterz.length; j++){
+			brainz[i].setRater(raterz[j]); // sets the rating method the brain must use for this iteration
 			tc.startGame(seed);
 
 			Date start = new Date();
@@ -66,9 +87,10 @@ public class BrainBenchmark {
 
 			results[i] = new Result();
 			results[i].thinkTime = (new Date().getTime() - start.getTime());
-			results[i].name = brainz[i].toString();
+			results[i].brainName = brainz[i].toString();
+			results[i].raterName = raterz[j].toString();
 			results[i].score = tc.count;
-		}
+		}}
 
 		return results;
 	}
@@ -90,7 +112,7 @@ public class BrainBenchmark {
 			Result[] results = bb.computeResults(seed);
 
 			for (int i = 0; i < results.length; i++) {
-				System.out.println(results[i].name + " " + results[i].score
+				System.out.println("		"+results[i].brainName + "\n" + results[i].raterName + results[i].score
 						+ " " + results[i].thinkTime);
 				sums[i].score += results[i].score;
 				sums[i].thinkTime += results[i].thinkTime;
@@ -100,7 +122,7 @@ public class BrainBenchmark {
 
 		System.out.println("Average Scores");
 		for (int i = 0; i < brainz.length; i++) {
-			System.out.println(brainz[i].toString() + " "
+			System.out.print(brainz[i].toString() + " "
 					+ (sums[i].score / SAMPLE_SIZE) + " "
 					+ ((double) sums[i].score / sums[i].thinkTime));
 		}
