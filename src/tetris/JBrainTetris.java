@@ -32,25 +32,33 @@ public class JBrainTetris extends JTetris {
 		
 		// Create the Timer object and have it send
 		// tick(DOWN) periodically
+		/*
 		timerAI = new javax.swing.Timer(0, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tickAI();
 			}
 		});
+		*/
 	}
 	
 	public void startGame() {
 		super.startGame();
 		// Create the Timer object and have it send
-		timerAI.start();
+		//timerAI.start();
 	}
 	
 	public void stopGame() {
 		super.stopGame();
-		timerAI.stop();
+		//timerAI.stop();
+	}
+	
+	public void tick(int verb) {
+		if (tickAI()) {
+			super.tick(verb);
+		}
 	}
 
-	public void tickAI() {
+	public boolean tickAI() {
 		if (current_count != tc.count) {
 			current_count = tc.count;
 			mMove = mBrain.bestMove(new Board(tc.board), tc.currentMove.piece, tc.nextPiece, tc.board.getHeight()-TetrisController.TOP_SPACE);
@@ -60,7 +68,10 @@ public class JBrainTetris extends JTetris {
 			super.tick(TetrisController.ROTATE);
 		} else if (tc.currentMove.x != mMove.x) {
 			super.tick(((tc.currentMove.x < mMove.x) ? TetrisController.RIGHT : TetrisController.LEFT));
+		} else {
+			return true;
 		}
+		return false;
 	}
 
 
