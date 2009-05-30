@@ -51,7 +51,7 @@ public class Finder {
   }
   //012012345
   void nextGen() {                            //This is the method called to produce the next generation of weight list kids.
-    p("GENERATION "+genCount);
+    p("\nGENERATION "+genCount);
     pa(pop);
     genCount++;
     int count = 0;                            //It works by starting with the most fit and using appropriate mating/mutation methods to
@@ -61,7 +61,7 @@ public class Finder {
         count++;
       }
       if(i<NUM_KIDS*0.6 && count<NUM_KIDS) {
-        nextPop[count] = mateKids(pop[i],pop[i+1]);
+        nextPop[count] = mutateKid(mateKids(pop[i],pop[i+1]));
         count++;
       }
       else if(i<NUM_KIDS*0.7 && count<NUM_KIDS) {
@@ -212,7 +212,7 @@ public class Finder {
     int totalScore = 0;
     for(int seed = 0; seed<5; seed++)
       totalScore+=playGame(kid, seed);
-    System.out.println(totalScore);
+    System.out.println("Average Score: " + totalScore/5.0);
     return totalScore;
   }
   
@@ -235,12 +235,15 @@ public class Finder {
 			int current_count = tc.count;
 			while ((current_count == tc.count) && tc.gameOn) tc.tick(TetrisController.DOWN);
       if((tempTime=System.nanoTime()) - lastDisplay > 200000000) {
-        // if(!displayed) displayed = true;
+        if(!displayed) {
+          displayed = true;
+          System.out.print((seed==0?"\n":"")+".");
+        }
         lastDisplay = tempTime;
-        // System.out.print("..."+tc.count);
+        System.out.print(".."+tc.count+".");
       }
 		}
-		if(displayed) p("");
+		if(displayed) p(".."+tc.count+".");
 		return tc.count;
   }
   
@@ -256,7 +259,7 @@ public class Finder {
     System.out.print('[');
     for(int i=0; i<x.length; i++) {
       System.out.print(((int)(x[i]*100))/100.0);
-      if(i<x.length-1) System.out.print(", ");
+      if(i<x.length-1) System.out.print(",\t");
     }
     p("]");
   }
@@ -264,7 +267,7 @@ public class Finder {
     System.out.print("[");
     for(int i=0; i<x.length; i++) {
       pa(x[i]);
-      if(i<x.length-1) System.out.print(", ");
+      if(i<x.length-1) System.out.print(" ");
     }
     p("]");
   }
