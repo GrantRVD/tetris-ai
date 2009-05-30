@@ -5,6 +5,8 @@ public class TetrisController {
 	// size of the board in blocks
 	public static final int WIDTH = 10; //10
 	public static final int HEIGHT = 20; //20
+	
+	public int rowsCleared = 0;
 
 	// Extra blocks at the top for pieces to start.
 	// If a piece is sticking up into this area
@@ -71,7 +73,7 @@ public class TetrisController {
 		} else if (verb==DOWN) {	// it's landed
 			board.place(currentMove);
 			
-			board.clearRows();
+			rowsCleared += board.clearRows();
 			// if the board is too tall, we've lost
 			if (board.getMaxHeight() > board.getHeight() - TOP_SPACE) {
 				gameOn = false;
@@ -154,6 +156,7 @@ public class TetrisController {
 		board = new DisplayBoard(WIDTH, HEIGHT + TOP_SPACE);
 
 		count = 0;
+		rowsCleared = 0;
 		gameOn = true;
 
 		nextPiece = pickNextPiece();
