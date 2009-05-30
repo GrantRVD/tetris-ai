@@ -12,10 +12,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.NumberFormat;
 import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -64,8 +66,11 @@ public class JTetris extends JComponent {
 	protected JLabel timeLabel;
 	protected JButton startButton;
 	protected JButton stopButton;
+	protected JLabel seedDisplay;
+	protected JButton startSeed;
 	protected javax.swing.Timer timer;
 	protected JSlider speed;
+	protected JFormattedTextField seq;
 	
 	public final int DELAY = 400;	// milliseconds per tick
 	
@@ -194,6 +199,24 @@ public class JTetris extends JComponent {
 		startTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Same as startGame(), but gives the controller a seed to generate a specific sequence of pieces
+	 * @param seed
+	 */
+	public void startGame(int seed) {
+		tc.startGame(seed);
+			
+		// draw the new board state once
+		repaint();
+		
+		enableButtons();
+		timeLabel.setText(" ");
+		seedDisplay.setText(Integer.toString(seed));
+		
+		timer.start();
+		startTime = System.currentTimeMillis();
+	}
+	
 	
 	/**
 	 Sets the enabling of the start/stop buttons
@@ -202,6 +225,7 @@ public class JTetris extends JComponent {
 	private void enableButtons() {
 	    startButton.setEnabled(!tc.gameOn);
 	    stopButton.setEnabled(tc.gameOn);
+	    startSeed.setEnabled(!tc.gameOn);
 	}
 	
 	/**
@@ -317,6 +341,7 @@ public class JTetris extends JComponent {
 		
 		// COUNT
 		countLabel = new JLabel("0");
+		seedDisplay = new JLabel();
 		panel.add(countLabel);
 		
 		// TIME 
@@ -342,6 +367,24 @@ public class JTetris extends JComponent {
 				stopGame();
 			}
 		});
+		
+		// SEED button
+		startSeed = new JButton("Seed");
+		panel.add(startSeed);
+		startSeed.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(seq.getText().isEmpty())
+				startGame(new Random().nextInt(10));
+				else
+				{
+					startGame(Integer.parseInt(seq.getText()));
+				}
+			}
+		});
+		
+		// Seed textfield
+		seq = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		panel.add(seq);
 		
 		enableButtons();
 		
