@@ -3,7 +3,7 @@ import boardrater.*;
 
 public class Ply2Brain implements Brain
 {
-	BoardRater boardRater = new SimpleHoles();
+	BoardRater boardRater = new FinalRater();
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight) {
 		double bestScore = 1e20;

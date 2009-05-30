@@ -14,24 +14,34 @@ import java.util.Date;
 public class Finder {  
   public static void main(String[] args) {
     Finder f = new Finder();
+    double[] temp,temp2;
+    // pa((temp=f.newRandomKidFromBaseline()));
+    // pa(temp2=f.mutateKid(f.dupeKid(temp)));
+    // p(f.equals(temp,temp2));
+    // p(temp[0]);
+    // p(temp2[0]);
+    // p(f.fitnessOf(f.newRandomKidFromBaseline()));
     f.go();
   }
   
   FinalRater rater = new FinalRater();                    //This is used solely by the fitnessOf method to simulate a game with a given kid. (Each kid is a list of weights, remember.)
   Brain raterUser;                                        //This is used solely by the fitnessOf method to simulate a game with the rater.
   TetrisController controller = new TetrisController();   //This is used solely by the fitnessOf method to simulate a game with the brain.
-  int NUM_KIDS   = 200;                   //This is the population size. I picked 200 because it feels like a nice number.
+  int NUM_KIDS   = 10;                    //This is the population size.
   int numWeights = -1;                    //This is the number of weights, derived straight from the FinalRater class in the boardrater package.
   double[][] pop;                         //This is the actual population - the list of lists of weights.
   double[][] nextPop;
   int[] fitnesses;                        //This is the list of fitnesses obtained after each generation, used to sort.
   Random randy = new Random();            //random generator
+  int genCount = 0;
   
   public Finder() {
     this.numWeights = FinalRater.raters.length;
     this.pop = new double[this.NUM_KIDS][this.numWeights];
     this.nextPop = new double[this.NUM_KIDS][this.numWeights];
-    this.raterUser = new Ply2Brain();
+    this.fitnesses = new int[this.NUM_KIDS];
+    this.raterUser = new Ply1Brain();
+    this.raterUser.setRater(this.rater);
   }
   
   void go() {
@@ -39,21 +49,34 @@ public class Finder {
       pop[i] = newRandomKid();
     nextGen();
   }
-  
+  //012012345
   void nextGen() {                            //This is the method called to produce the next generation of weight list kids.
+    p("GENERATION "+genCount);
+    pa(pop);
+    genCount++;
     int count = 0;                            //It works by starting with the most fit and using appropriate mating/mutation methods to
     for(int i=0; i<NUM_KIDS; i++) {           //gradually fill up the nextPop array with the new children.
-      if(i<NUM_KIDS*0.3) {                    //afterwards, it swaps nextPop with pop, gets the fitnesses of the new population, and then sorts.
-        nextPop[count] = mateKids(pop[i],pop[i+1]);
-        count++;                              //After this method, the population is in the same state it was in before this method was called.
-      }
-      else if(i>=NUM_KIDS*0.3) {
-        nextPop[count] = mutateKid(pop[i]);
+      if(i<3) {                               //afterwards, it swaps nextPop with pop, gets the fitnesses of the new population, and then sorts.
+        nextPop[count] = dupeKid(pop[i]);              //After this method, the population is in the same state it was in before this method was called.
         count++;
       }
-      else if(i>NUM_KIDS*0.7) {
+      if(i<NUM_KIDS*0.6 && count<NUM_KIDS) {
+        nextPop[count] = mateKids(pop[i],pop[i+1]);
+        count++;
+      }
+      else if(i<NUM_KIDS*0.7 && count<NUM_KIDS) {
+        nextPop[count] = mutateKid(dupeKid(pop[i]));
+        count++;
+      }
+      else if(i>=NUM_KIDS*0.7 && count<NUM_KIDS) {
         nextPop[count] = newRandomKid();
         count++;
+      }
+    }
+    for(int i=0; i<NUM_KIDS; i++) {
+      for(int j=i+1; j<NUM_KIDS; j++) {
+        if(equals(nextPop[i],nextPop[j]))
+          nextPop[j] = newRandomKid();
       }
     }
     double[][] temp;                          //now that nextPop is full of new children, swap it with pop so that pop becomes the drawing board for the NEXT generation.
@@ -62,6 +85,7 @@ public class Finder {
     nextPop = temp;
     getFitnesses();                          //figure out what all the fitnesses of the children are.
     quicksortByFitness();                    //sort the new population, to put the most fit children in the front of the list for the next generation.
+    nextGen();
   }
   
   double[] newRandomKid() {                  //This method generates a new random child. Each child is a list of weights.
@@ -72,10 +96,25 @@ public class Finder {
   }
   
   double[] newRandomKidFromBaseline() {      //This method generates a new random child from a baseline list of hand-selected weights.
-    double[] baseline = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}; //todo come up with a good baseline weightlist.
+    double[] baseline = {
+/*new ConsecHorzHoles(),*/                0,  
+/*new HeightAvg(),*/                      10,
+/*new HeightMax(),*/                      1,
+/*new HeightMinMax(),*/                   1,
+/*new HeightVar(),*/                      0,
+/*new HeightStdDev(),*/                   5,
+/*new SimpleHoles(),*/                    40,
+/*new ThreeVariance(),*/                  10,
+/*new Trough(),*/                         1,
+/*new WeightedHoles(),*/                  4,
+/*new RowsWithHolesInMostHoledColumn()*/  4,
+/*new AverageSquaredTroughHeight()*/      15,
+/*new BlocksAboveHoles()*/                2
+    };
     double[] kid = new double[numWeights];
+    double temp;
     for(int i=0; i<numWeights; i++)
-      kid[i] = baseline[i]+randy.nextDouble()*0.3-.15; //Each new random kid will have all weights between 0.5 and 1.5.
+      kid[i] = (temp=baseline[i])+(randy.nextDouble()*0.2-.1)*temp; //Each new random kid will have all weights within 10 percent of the baseline weights.
     return kid;
   }
   
@@ -104,6 +143,12 @@ public class Finder {
     return kid;
   }
   
+  boolean equals(double[] one, double[] two) {
+    for(int i=0; i<one.length; i++)
+      if(one[i]!=two[i]) return false;
+    return true;
+  }
+  
   void getFitnesses() {
     for(int i=0; i<NUM_KIDS; i++) {
       fitnesses[i] = fitnessOf(pop[i]);
@@ -113,7 +158,7 @@ public class Finder {
   void quicksortByFitness() {
     quicksortByFitness(0,NUM_KIDS-1);
     double[] temp;
-    for(int i=0; i<NUM_KIDS; i++) {
+    for(int i=0,m=NUM_KIDS/2; i<m; i++) {
       temp = pop[i];
       pop[i] = pop[NUM_KIDS-1-i];
       pop[NUM_KIDS-1-i] = temp;
@@ -164,27 +209,66 @@ public class Finder {
   }
   
   int fitnessOf(double[] kid) {
+    int totalScore = 0;
+    for(int seed = 0; seed<5; seed++)
+      totalScore+=playGame(kid, seed);
+    System.out.println(totalScore);
+    return totalScore;
+  }
+  
+  int playGame(double[] kid, int seed) {
     //todo make a tetris controller and use it to evaluate a kid in this method.
     //do this by setting the coefficients of the FinalRater to the kid, and giving the
     //FinalRater to the TetrisController so the brain can use it to play the game.
 		TetrisController tc = controller;
-		
-		int seed = 0; //todo perhaps find a better seed? probably doesn't matter.
-		
+    rater.coefficients = kid;
 		tc.startGame(seed);
 
 		Date start = new Date();
 
+    long lastDisplay = System.nanoTime(),tempTime;
+    boolean displayed = false;
 		while (tc.gameOn) {
 			Move move = raterUser.bestMove(new Board(tc.board), tc.currentMove.piece, tc.nextPiece, tc.board.getHeight() - TetrisController.TOP_SPACE);
 			while (!tc.currentMove.piece.equals(move.piece)) tc.tick(TetrisController.ROTATE);
 			while (tc.currentMove.x != move.x) tc.tick(((tc.currentMove.x < move.x) ? TetrisController.RIGHT : TetrisController.LEFT));
 			int current_count = tc.count;
 			while ((current_count == tc.count) && tc.gameOn) tc.tick(TetrisController.DOWN);
+      if((tempTime=System.nanoTime()) - lastDisplay > 200000000) {
+        // if(!displayed) displayed = true;
+        lastDisplay = tempTime;
+        // System.out.print("..."+tc.count);
+      }
 		}
-
+		if(displayed) p("");
 		return tc.count;
   }
+  
+  
+  
+  static void p() {              //This is just handy.
+    System.out.println();
+  }
+  static void p(Object o) {              //This is just handy.
+    System.out.println(o);
+  }
+  static void pa(double[] x) {              //This is just handy.
+    System.out.print('[');
+    for(int i=0; i<x.length; i++) {
+      System.out.print(((int)(x[i]*100))/100.0);
+      if(i<x.length-1) System.out.print(", ");
+    }
+    p("]");
+  }
+  static void pa(double[][] x) {              //This is just handy.
+    System.out.print("[");
+    for(int i=0; i<x.length; i++) {
+      pa(x[i]);
+      if(i<x.length-1) System.out.print(", ");
+    }
+    p("]");
+  }
+  
 }
 
 //todo make mutations of kids with higher fitnesses change their values by a lesser amount each time.
