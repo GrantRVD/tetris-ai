@@ -69,7 +69,6 @@ public class PlyNBrain implements Brain {
 							nextPossiblePieces.add((LinkedList<Piece>) actualPieces
 									.clone());
 						} else {
-							System.out.println("arg");
 							for (Piece possiblePiece : possiblePieces) {
 								LinkedList<Piece> nextPossibleLLPiece = new LinkedList<Piece>();
 								nextPossibleLLPiece.add(possiblePiece);
