@@ -31,7 +31,7 @@ public class Finder {
     this.numWeights = FinalRater.raters.length;
     this.pop = new double[this.NUM_KIDS][this.numWeights];
     this.nextPop = new double[this.NUM_KIDS][this.numWeights];
-    this.raterUser = new Ply2AnyBrain(this.rater);
+    this.raterUser = new Ply2Brain();
   }
   
   void go() {
