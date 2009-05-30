@@ -373,8 +373,8 @@ public class JTetris extends JComponent {
 		panel.add(startSeed);
 		startSeed.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(seq.getText().isEmpty())
-				startGame(new Random().nextInt(10));
+				if(seq.getText().length()==0)
+  				startGame(new Random().nextInt(10));
 				else
 				{
 					startGame(Integer.parseInt(seq.getText()));
