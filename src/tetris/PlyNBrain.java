@@ -5,7 +5,7 @@ import boardrater.*;
 
 public class PlyNBrain implements Brain {
 	Piece[] possiblePieces;
-	BoardRater boardRater = new SimpleHoles();
+	BoardRater boardRater = new FinalRater();
 	int level = 0;
 
 	class Score {

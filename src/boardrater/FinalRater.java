@@ -29,7 +29,7 @@ public class FinalRater extends BoardRater {
     new BlocksAboveHoles()
  };
  
-  double[] coefficients = {
+  public double[] coefficients = {
 /*new ConsecHorzHoles(),*/                0,  
 /*new HeightAvg(),*/                      10,
 /*new HeightMax(),*/                      1,
@@ -71,7 +71,10 @@ public class FinalRater extends BoardRater {
  }
  
  double rate(Board board, double[] coefficients) {
+   double[] temp = this.coefficients;
    this.coefficients = coefficients;
-   return this.rate(board);
+   double ret = this.rate(board);
+   this.coefficients = temp;
+   return ret;
  }
 }

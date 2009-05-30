@@ -3,7 +3,7 @@ package tetris;
 import boardrater.*;
 
 public class Ply1Brain implements Brain {
-	BoardRater boardRater = new SimpleHoles(); // Defines the default rater for this brain
+	BoardRater boardRater = new FinalRater(); // Defines the default rater for this brain
 
 	public Move bestMove(Board board, Piece piece, Piece nextPiece,
 			int limitHeight) {
