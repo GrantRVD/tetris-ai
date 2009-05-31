@@ -35,6 +35,13 @@ public class Board {
 				grid[x][y] = false;
 			}
 		}
+		
+		columnHeightDirties = new boolean[width];
+		_columnHeights = new int[width];
+		for(int i=0; i<width; i++) {
+		  columnHeightDirties[i] = true;
+		  _columnHeights[i] = -1;
+	  }
 	}
 	
 	public Board(Board o) {
@@ -61,7 +68,7 @@ public class Board {
 
   public void makeDirty() {
     maxHeightDirty = true;
-    for(int i=0; i<10; i++) {
+    for(int i=0; i<width; i++) {
       columnHeightDirties[i] = true;
     }
   }
@@ -135,8 +142,8 @@ public class Board {
 	 * Returns the height of the given column -- i.e. the y value of the highest
 	 * block + 1. The height is 0 if the column contains no blocks.
 	 */
-	private boolean[] columnHeightDirties = {true,true,true,true,true,true,true,true,true,true};
-	private int[] _columnHeights = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+	private boolean[] columnHeightDirties;
+	private int[] _columnHeights;
 	public int getColumnHeight(int x) {
       if(caching && !columnHeightDirties[x]) {
         return _columnHeights[x];

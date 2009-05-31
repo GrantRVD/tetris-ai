@@ -27,8 +27,8 @@ public class Finder {
   FinalRater rater = new FinalRater();                    //This is used solely by the fitnessOf method to simulate a game with a given kid. (Each kid is a list of weights, remember.)
   Brain raterUser;                                        //This is used solely by the fitnessOf method to simulate a game with the rater.
   TetrisController controller = new TetrisController();   //This is used solely by the fitnessOf method to simulate a game with the brain.
-  int NUM_KIDS   = 10;                    //This is the population size.
-  int numWeights = -1;                    //This is the number of weights, derived straight from the FinalRater class in the boardrater package.
+  static int NUM_KIDS   = 10;                    //This is the population size.
+  static int numWeights = -1;                    //This is the number of weights, derived straight from the FinalRater class in the boardrater package.
   double[][] pop;                         //This is the actual population - the list of lists of weights.
   double[][] nextPop;
   int[] fitnesses;                        //This is the list of fitnesses obtained after each generation, used to sort.
@@ -53,11 +53,13 @@ public class Finder {
   void nextGen() {                            //This is the method called to produce the next generation of weight list kids.
     p("\nGENERATION "+genCount);
     pa(pop);
+    p("");
+    patrue(pop);
     genCount++;
     int count = 0;                            //It works by starting with the most fit and using appropriate mating/mutation methods to
     for(int i=0; i<NUM_KIDS; i++) {           //gradually fill up the nextPop array with the new children.
       if(i<3) {                               //afterwards, it swaps nextPop with pop, gets the fitnesses of the new population, and then sorts.
-        nextPop[count] = dupeKid(pop[i]);              //After this method, the population is in the same state it was in before this method was called.
+        nextPop[count] = dupeKid(pop[i],fitnesses[i]);              //After this method, the population is in the same state it was in before this method was called.
         count++;
       }
       if(i<NUM_KIDS*0.6 && count<NUM_KIDS) {
@@ -73,10 +75,13 @@ public class Finder {
         count++;
       }
     }
-    for(int i=0; i<NUM_KIDS; i++) {
-      for(int j=i+1; j<NUM_KIDS; j++) {
-        if(equals(nextPop[i],nextPop[j]))
-          nextPop[j] = newRandomKid();
+    for(int i=0; i<NUM_KIDS; i++) {                                             //for every kid...
+      for(int j=i+1; j<NUM_KIDS; j++) {                                           //for all the rest of the kids...
+        if(equals(nextPop[i],nextPop[j])) {                                         //if the two kids are the same...
+          if(nextPop[j].length == numWeights + 1 && nextPop[i].length == numWeights)   //if the one that's gonna die has a precomputed fitness on it, make sure to save it.
+            nextPop[i] = nextPop[j];
+          nextPop[j] = newRandomKid();                                                //now rid the dupe!
+        }
       }
     }
     double[][] temp;                          //now that nextPop is full of new children, swap it with pop so that pop becomes the drawing board for the NEXT generation.
@@ -91,7 +96,7 @@ public class Finder {
   double[] newRandomKid() {                  //This method generates a new random child. Each child is a list of weights.
     double[] kid = new double[numWeights];
     for(int i=0; i<numWeights; i++)
-      kid[i] = randy.nextDouble()*1.0+0.5; //Each new random kid will have all weights between 0.5 and 1.5.
+      kid[i] = 0;// randy.nextDouble()*1.0+0.5; //Each new random kid will have all weights between 0.5 and 1.5.
     return kid;
   }
   
@@ -119,8 +124,10 @@ public class Finder {
   }
   
   double[] mutateKid(double[] kid) {      //This slightly tweaks all of the parameters in the kid. DOES NOT CREATE A COPY.
-    for(int i=0; i<numWeights; i++)
-      kid[i] += randy.nextDouble()*0.3-0.15;  //Add a random number between -0.15 and 0.15 to each value in the kid.
+    for(int i=0; i<numWeights; i++) {
+      kid[i] *= 1+(randy.nextDouble()*0.3-0.15);  //Add a random number between -0.15 and 0.15 to each value in the kid.
+      kid[i] += randy.nextDouble()*0.3-0.15;
+    }
     return kid;
   }
   
@@ -136,6 +143,13 @@ public class Finder {
     return dupe;
   }
   
+  double[] dupeKid(double[] kid, int fitness) { //This dupes a child and puts the fitness as the N+1st element, to avoid future calculation.
+    double[] dupe = new double[numWeights+1];
+    for(int i=0; i<numWeights; i++) dupe[i] = kid[i];
+    dupe[numWeights] = fitness;
+    return dupe;
+  }
+  
   double[] mateKids(double[] one, double[] two) {   //This mates two kids and produces offspring: the offspring is a new object.
     double[] kid = new double[numWeights];
     for(int i=0; i<numWeights; i++)
@@ -144,7 +158,7 @@ public class Finder {
   }
   
   boolean equals(double[] one, double[] two) {
-    for(int i=0; i<one.length; i++)
+    for(int i=0; i<numWeights; i++)
       if(one[i]!=two[i]) return false;
     return true;
   }
@@ -158,10 +172,14 @@ public class Finder {
   void quicksortByFitness() {
     quicksortByFitness(0,NUM_KIDS-1);
     double[] temp;
+    int tempfit;
     for(int i=0,m=NUM_KIDS/2; i<m; i++) {
       temp = pop[i];
       pop[i] = pop[NUM_KIDS-1-i];
       pop[NUM_KIDS-1-i] = temp;
+      tempfit = fitnesses[i];
+      fitnesses[i] = fitnesses[NUM_KIDS-i-1];
+      fitnesses[NUM_KIDS-1-i] = tempfit;
     }
   }
   
@@ -209,6 +227,10 @@ public class Finder {
   }
   
   int fitnessOf(double[] kid) {
+    if(kid.length == numWeights+1) {
+      System.out.println("Precalculated Average Score: " + (((int)(kid[numWeights]))/5.0));
+      return (int) kid[numWeights];
+    }
     int totalScore = 0;
     for(int seed = 0; seed<5; seed++)
       totalScore+=playGame(kid, seed);
@@ -267,6 +289,24 @@ public class Finder {
     System.out.print("[");
     for(int i=0; i<x.length; i++) {
       pa(x[i]);
+      if(i<x.length-1) System.out.print(" ");
+    }
+    p("]");
+  }
+  
+  
+  static void patrue(double[] x) {              //This is just handy.
+    System.out.print('[');
+    for(int i=0; i<x.length; i++) {
+      System.out.print(x[i]);
+      if(i<x.length-1) System.out.print(", ");
+    }
+    p("]");
+  }
+  static void patrue(double[][] x) {              //This is just handy.
+    System.out.print("[");
+    for(int i=0; i<x.length; i++) {
+      patrue(x[i]);
       if(i<x.length-1) System.out.print(" ");
     }
     p("]");

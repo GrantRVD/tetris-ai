@@ -1,6 +1,6 @@
 package tetris;
 /*
- * JBrainTetris.java
+ * JBrainTetrisFast.java
  *
  * Created on January 31, 2002, 10:58 AM
  */
@@ -18,16 +18,16 @@ import javax.swing.JCheckBox;
  * @author Lews Therin
  * @version
  */
-public class JBrainTetris extends JTetris {
+public class JBrainTetrisFast extends JTetrisFast {
 	private static final long serialVersionUID = 1L;
 
-	private Brain mBrain = new Ply1Brain();
+	private Brain mBrain = new Ply2Brain();
 	private Move mMove;
 	protected javax.swing.Timer timerAI;
 	int current_count = -1;
 
-	/** Creates new JBrainTetris */
-	public JBrainTetris(int width, int height) {
+	/** Creates new JBrainTetrisFast */
+	public JBrainTetrisFast(int width, int height) {
 		super(width, height);
 		
 		// Create the Timer object and have it send
@@ -64,14 +64,13 @@ public class JBrainTetris extends JTetris {
 			mMove = mBrain.bestMove(new Board(tc.board), tc.currentMove.piece, tc.nextPiece, tc.board.getHeight()-TetrisController.TOP_SPACE);
 		}
 		
-		if (!tc.currentMove.piece.equals(mMove.piece)) { 
+		while (!tc.currentMove.piece.equals(mMove.piece)) { 
 			super.tick(TetrisController.ROTATE);
-		} else if (tc.currentMove.x != mMove.x) {
+		} 
+		while (tc.currentMove.x != mMove.x) {
 			super.tick(((tc.currentMove.x < mMove.x) ? TetrisController.RIGHT : TetrisController.LEFT));
-		} else {
-			return true;
-		}
-		return false;
+		} 
+		return true;
 	}
 
 
