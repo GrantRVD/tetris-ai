@@ -74,8 +74,9 @@ public class Ply2Brain implements Brain
 	 * This method defines how the brain will rate the board. This method can be used to reset the boardRater
 	 * during testing, without needing to explicitly change code.
 	 */
-	public void setRater(BoardRater r)
+	public Brain setRater(BoardRater r)
 	{
 		boardRater = r;
+		return this;
 	}
 }

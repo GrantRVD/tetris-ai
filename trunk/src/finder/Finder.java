@@ -58,19 +58,18 @@ public class Finder {
     genCount++;
     int count = 0;                            //It works by starting with the most fit and using appropriate mating/mutation methods to
     for(int i=0; i<NUM_KIDS; i++) {           //gradually fill up the nextPop array with the new children.
-      if(i<3) {                               //afterwards, it swaps nextPop with pop, gets the fitnesses of the new population, and then sorts.
+      if(i<NUM_KIDS*0.3) {                               //afterwards, it swaps nextPop with pop, gets the fitnesses of the new population, and then sorts.
         nextPop[count] = dupeKid(pop[i],fitnesses[i]);              //After this method, the population is in the same state it was in before this method was called.
         count++;
       }
-      if(i<NUM_KIDS*0.6 && count<NUM_KIDS) {
+      if(i<NUM_KIDS*0.4 && count<NUM_KIDS) {
         nextPop[count] = mutateKid(mateKids(pop[i],pop[i+1]));
         count++;
-      }
-      else if(i<NUM_KIDS*0.7 && count<NUM_KIDS) {
+      } else if(i<NUM_KIDS*0.9 && count<NUM_KIDS) {
         nextPop[count] = mutateKid(dupeKid(pop[i]));
         count++;
       }
-      else if(i>=NUM_KIDS*0.7 && count<NUM_KIDS) {
+      else if(i>=NUM_KIDS*0.9 && count<NUM_KIDS) {
         nextPop[count] = newRandomKid();
         count++;
       }
@@ -96,7 +95,7 @@ public class Finder {
   double[] newRandomKid() {                  //This method generates a new random child. Each child is a list of weights.
     double[] kid = new double[numWeights];
     for(int i=0; i<numWeights; i++)
-      kid[i] = 0;// randy.nextDouble()*1.0+0.5; //Each new random kid will have all weights between 0.5 and 1.5.
+      kid[i] = randy.nextDouble()*1.0-0.5; //Each new random kid will have all weights between 0.5 and 1.5.
     return kid;
   }
   
@@ -125,8 +124,10 @@ public class Finder {
   
   double[] mutateKid(double[] kid) {      //This slightly tweaks all of the parameters in the kid. DOES NOT CREATE A COPY.
     for(int i=0; i<numWeights; i++) {
-      kid[i] *= 1+(randy.nextDouble()*0.3-0.15);  //Add a random number between -0.15 and 0.15 to each value in the kid.
-      kid[i] += randy.nextDouble()*0.3-0.15;
+      if(randy.nextDouble()>0.5) {
+        kid[i] *= 1+(randy.nextDouble()*0.3-0.15);  //Add a random number between -0.15 and 0.15 to each value in the kid.
+        kid[i] += randy.nextDouble()*0.3-0.15;
+      }
     }
     return kid;
   }
@@ -248,7 +249,7 @@ public class Finder {
 
 		Date start = new Date();
 
-    long lastDisplay = System.nanoTime(),tempTime;
+    long lastDisplay = System.currentTimeMillis(),tempTime;
     boolean displayed = false;
 		while (tc.gameOn) {
 			Move move = raterUser.bestMove(new Board(tc.board), tc.currentMove.piece, tc.nextPiece, tc.board.getHeight() - TetrisController.TOP_SPACE);
@@ -256,7 +257,7 @@ public class Finder {
 			while (tc.currentMove.x != move.x) tc.tick(((tc.currentMove.x < move.x) ? TetrisController.RIGHT : TetrisController.LEFT));
 			int current_count = tc.count;
 			while ((current_count == tc.count) && tc.gameOn) tc.tick(TetrisController.DOWN);
-      if((tempTime=System.nanoTime()) - lastDisplay > 200000000) {
+      if((tempTime=System.currentTimeMillis()) - lastDisplay > 10000) {
         if(!displayed) {
           displayed = true;
           System.out.print((seed==0?"\n":"")+".");
@@ -265,7 +266,10 @@ public class Finder {
         System.out.print(".."+tc.count+".");
       }
 		}
-		if(displayed) p(".."+tc.count+".");
+		if(!displayed) {
+      System.out.print((seed==0?"\n":"")+".");
+		}
+		p(".."+tc.count+".");
 		return tc.count;
   }
   
