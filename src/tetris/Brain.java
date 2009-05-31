@@ -1,5 +1,5 @@
 package tetris;
-import boardrater.BoardRater;
+import boardrater.*;
 // Brain.java -- the interface for Tetris brains
 //package Hw2;
 public interface Brain {
@@ -13,5 +13,7 @@ public interface Brain {
 	*/
 	public Move bestMove(Board board, Piece piece, Piece nextPiece, int limitHeight);
 	
-	public void setRater(BoardRater r);
+	public Brain setRater(BoardRater r);
+	
+	public BoardRater boardRater = new FinalRater();
 }

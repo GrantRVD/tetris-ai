@@ -44,7 +44,7 @@ public class FinalRater extends BoardRater {
 // /*new RowsWithHolesInMostHoledColumn()*/  4,
 // /*new AverageSquaredTroughHeight()*/      15,
 // /*new BlocksAboveHoles()*/                2
-//   }
+//   };
 
 
 /***********DEFUALT WEIGHTS. UNCOMMENT THE DESIRED WEIGHTS.**************/
@@ -59,8 +59,19 @@ public class FinalRater extends BoardRater {
  
 //these weights are from gen. 70 of the genetic algorithm, starting with a list of all zeroes for weights.
 //these weights have scored 2.5 million in a single ply game. other weights have obtained 2.8 million, but these averaged the highest.
- public double[] coefficients = {0.9686097026795061, 0.1366862371509124, 0.1959640814385032, -0.4157005367058263, 0.4393275614613794, -0.19272725359581952, 0.643303423041282, 0.3048018715760217, 0.5230983454901121, 0.406929661228957, 0.2525305054989866, 1.4247599835416362, 0.0286589312318309};
+ //public double[] coefficients = {0.9686097026795061, 0.1366862371509124, 0.1959640814385032, -0.4157005367058263, 0.4393275614613794, -0.19272725359581952, 0.643303423041282, 0.3048018715760217, 0.5230983454901121, 0.406929661228957, 0.2525305054989866, 1.4247599835416362, 0.0286589312318309};
  
+//these weights are also from gen. 70 of the genetic algorithm, starting with zeroes for all weights.
+//these weights have obtained 2.8 million, but averaged less than the above weights over the 5 seeded games.
+ //public double[] coefficients = {0.8791266314811436, 0.12573951551431792, 0.24997483966927936, -0.37622392923737297, 0.3691940742930254, -0.15248712080838983, 0.47572218993649196, 0.5080173951623478, -0.17424868949023015, 0.3063003516304143, 0.20505056555309084, 1.2349924733759654, -0.004861089935609013};
+
+//these weights are also from gen. 64 of a second run of the genetic algorithm, starting with zeroes for all weights.
+//these weights have obtained 5.23 million, and averaged 2.34 million over the five seeded games. This is on par with Jamie Dellacherie's 2003 one-piece algorithm, which averages 1625000 pieces over many games! Must test these weights in one-ply games over many many seeds to see if these weights beat his algorithm!!
+ public double[] coefficients = {0.41430724103382527, 0.04413383739389207, 0.1420172532064692, -0.13881428312611474, 0.22970827267905328, -0.052368130931930074, 0.5712789822642919, 0.2851778629665227, 0.041534211381371554, -0.011738293785449829, 0.241299661945633, 0.8292064267563932, -0.009937763420971586};
+
+//these weights are obtained from testing a reckless 2-ply brain in the genetic algorithm for 100 generations ON A 6 BY 12 BOARD. 
+//these may or may not scale up to a 10x20 very well ;-)
+ //public double[] coefficients = {0.21695764825310368, 0.015484314708510895, -0.08512557714786578, -0.08405969708829672, 0.059656764700398955, 0.1332411646741821, 0.47178903037027686, 0.1119740846941119, -0.35049715878251264, 0.7187357441747413, 0.11497732766424408, 0.8499384885167329, -0.007611642913445417};
  /***********END DEFAULT WEIGHTS. UNCOMMENT THE DESIRED WEIGHTS.**********/
  
  
@@ -70,8 +81,8 @@ public class FinalRater extends BoardRater {
    // for(int i=0; i<raters.length; i++) {
    //   System.out.println((temp=""+coefficients[i]).substring(0,temp.length()>=4?temp.length():3)+"\t\t"+raters[i]);
    // }
-   // for(int i=0; i<this.coefficients.length; i++)       //UNCOMMENT THIS LOOP TO NEGATE THE WEIGHTS AND SEE HOW BADLY IT KNOWS HOW TO PLAY!
-     // this.coefficients[i] = 0-this.coefficients[i];
+//   for(int i=0; i<this.coefficients.length; i++)       //UNCOMMENT THIS LOOP TO NEGATE THE WEIGHTS AND SEE HOW BADLY IT KNOWS HOW TO PLAY!
+//     this.coefficients[i] = 0-this.coefficients[i];
  }
  
  public FinalRater(double[] c) {
@@ -80,6 +91,8 @@ public class FinalRater extends BoardRater {
      return;
    }
    this.coefficients = c;
+//   for(int i=0; i<this.coefficients.length; i++)       //UNCOMMENT THIS LOOP TO NEGATE THE WEIGHTS AND SEE HOW BADLY IT KNOWS HOW TO PLAY!
+//     this.coefficients[i] = 0-this.coefficients[i];
  }
  
  double rate(Board board) {

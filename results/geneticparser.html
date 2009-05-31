@@ -1,0 +1,128 @@
+<html><head><script>
+var l = window.location+"";
+
+var HIDE_WEIGHTS = true && (l.indexOf("weights")==-1);
+var SORT_BY_MAX_NOT_AVG = false;
+var file = "zeros.txt";
+if(l.indexOf("file=")!=-1) file = l.substring(l.indexOf("file=")+5);
+var text;
+
+function go() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET",file);
+  xhr.onreadystatechange = function() {
+    if(this.readyState != 4) return;
+    text = this.responseText+"";
+    format();
+  };
+  xhr.send(undefined);
+}
+
+function format() {
+  text = text.substring(text.lastIndexOf("GENERATION 0"))+".\n\n";
+  text = text.split(/\.\d+\.\./).join("");                                          //rid the giant processions of numbers for each game... all but final scores.
+  text = text.split("\n.").join("").split("\n\nAverage").join("\nAverage");         //rid the extra newlines before new fitness completions.
+  text = text.split("Average Score: ").join(" avg: ");                              //replace "Average Score: " with "avg: "
+  text = text.split("Precalculated ").join("p");                                    //rid notification of fitness caching
+  text = text.split("p avg: ").join("pavg: ");                                          //rid the extra space...
+  var ind, maxscores = {};
+  while((ind=text.indexOf(text.match(/GENERATION \d+\n\[\[/)))!=-1) {               //this loop rids the hundredths-place weight printouts, and, if desired, the precise ones too.
+    text = text.substring(0,text.indexOf("[[",ind)-1) + ":" + text.substring(text.indexOf("]\n]",ind)+4);
+    if(HIDE_WEIGHTS) text = text.substring(0,text.indexOf("[[",ind)-1) + text.substring(text.indexOf("]\n]",ind)+3);
+  }
+  while((ind=text.indexOf(text.match(/avg\: \d+\.[02468]\.\./)))!=-1)     //make sure that all per-game scores are on a new line before their average.
+    text = text.substring(0,text.indexOf("..",ind))+"\n"+text.substring(text.indexOf("..",ind));
+  var s = "";
+  while((ind=text.indexOf(text.match(/\.\.\d+\./)))!=-1) {                          //yank out all the intermediate per-game scores and record only the maximum.
+    var scores = text.substring(ind,text.indexOf("\n",ind)).split("...").join("..").split("..").join(".").split(".");
+    scores.length--; scores.splice(0,1);
+    var maxscore = Math.max.apply(window,scores);
+    var endline = text.indexOf("\n",ind);
+    var endnextline = text.indexOf("\n",endline+2);
+    var line = text.substring(endline,endnextline);
+    var totalscore = parseInt(line.substring(line.indexOf("avg: ")+5,line.indexOf(".")),10)*5 + parseInt(line.charAt(line.indexOf('.')+1),10)/2;
+    maxscores[totalscore] = maxscore;                                               //save every maximum score in that hash, so in case the total comes up again, we know what its max was.
+    line = line.split("\n").join("");
+    while(line.length < 30) line+=" ";
+    line += "max: "+maxscore;
+    text = text.substring(0,endline) + "\n"+ line + text.substring(endnextline);
+    text = text.substring(0,ind) + text.substring(endline+1);
+  }
+  while((ind=text.indexOf("pa"))!=-1) {                                             //restore missing maxscores from caching
+    var line = text.substring(ind,text.indexOf("\n",ind));
+    line = " "+line.substring(1);
+    var totalscore = parseInt(line.substring(line.indexOf("avg: ")+5,line.indexOf(".")),10)*5 + parseInt(line.charAt(line.indexOf('.')+1),10)/2;
+    var maxscore = maxscores[totalscore];
+    if(maxscore!==undefined) {
+      while(line.length < 30) line+=" ";
+      line += "max: "+maxscore;
+    }
+    text = text.substring(0,ind) + line + text.substring(text.indexOf("\n",ind));
+  }
+  text = text.split(": a").join(":\n        a");
+  text = text.split("\n a").join("\n        a");
+  if(HIDE_WEIGHTS) {      //if we're hiding the weights, go through and get all the averages and max scores, sort them, and make a summary. then reprint EVERYTHING.
+    var lastgenind = text.lastIndexOf("GENERATION ")+11;
+    var numgens = parseInt(text.substring(lastgenind,text.indexOf(":",lastgenind)),10);
+    var gens = [];
+    for(var i=0; i<=numgens; i++) {
+      var scores = [];
+      var group = text.substring(text.indexOf("\n",text.indexOf("GENERATION "+i)),((i<numgens)?(text.indexOf("GENERATION "+(i+1))-2):(text.length)));
+      group = group.split("\n        avg: ");
+      group.splice(0,1);
+      for(var j=0; j<group.length; j++) {
+        line = group[j];
+        var totalscore = parseInt(line.substring(0,line.indexOf(".")),10)*5 + parseInt(line.charAt(line.indexOf('.')+1),10)/2;
+        var maxloc = line.indexOf('max: ');
+        var maxscore = (maxloc!=-1)?parseInt(line.substring(maxloc+5,line.length),10):undefined;
+        scores.push({s: totalscore/5, m: maxscore});
+      }
+      if(!SORT_BY_MAX_NOT_AVG) scores.sort(function(a,b) {return b.s-a.s;});
+      if( SORT_BY_MAX_NOT_AVG) scores.sort(function(a,b) {return b.m-a.m;});
+      gens.push(scores);
+    }
+    text = "";
+    for(var i=0; i<=numgens; i++) {
+      text+="GENERATION "+i+":\n";
+      var bestavg = 0, bestmax = -1;
+      for(var j=0; j<gens[i].length; j++) {
+        line = "        avg: "+Math.round(gens[i][j].s);
+        if(bestavg<gens[i][j].s) bestavg = gens[i][j].s;
+        if(gens[i][j].m!==undefined) {
+          while(line.length<30) line+=" ";
+          line+="max: "+gens[i][j].m;
+          if(gens[i][j].m>bestmax) bestmax = gens[i][j].m;
+        }
+        text+=line+"\n";
+      }
+      gens[i].bestmax = bestmax;
+      gens[i].bestavg = bestavg;
+    }
+    var summary = "";
+    summary+="Summary:\n";
+    summary+="Gen    Best Avg     Best Max\n";
+    for(var i=0; i<numgens; i++) {
+      var line = "";
+      line+=i;
+      while(line.length<7) line+=" ";
+      line+=gens[i].bestavg;
+      while(line.length<20) line+=" ";
+      line+=gens[i].bestmax;
+      summary+=line+"\n";
+    }
+    text = summary+"\n\n\n"+text;
+  }
+  //alert(s);
+  display();
+}
+
+function display(str) {
+  str = str || text;
+  document.body.innerHTML = str.split("\n").join("<br>").split("  ").join("&nbsp;&nbsp;").split("<br> ").join("<br>&nbsp;");
+}
+</script></head><body onload="go();" style="font-family: monaco; font-size: 10px;">
+
+
+
+
+</body></html>
