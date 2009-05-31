@@ -33,7 +33,7 @@ public class SingleBrainTest {
 
 		Date start = new Date();
 
-    long lastDisplay = System.nanoTime(),tempTime;
+    long lastDisplay = System.currentTimeMillis(),tempTime;
 		while (tc.gameOn) {
 			Move move = brain.bestMove(new Board(tc.board),
 					tc.currentMove.piece, tc.nextPiece, tc.board
@@ -53,7 +53,7 @@ public class SingleBrainTest {
 				tc.tick(TetrisController.DOWN);
 			}
       
-      if((tempTime=System.nanoTime()) - lastDisplay > 500000000) {
+      if((tempTime=System.currentTimeMillis()) - lastDisplay > 20000) {
         lastDisplay = tempTime;
         System.out.print("..."+tc.count);
       }
