@@ -1,0 +1,47 @@
+<html><head><script>
+var l = window.location+"";
+
+var HIDE_WEIGHTS = true && (l.indexOf("weights")==-1);
+var SORT_BY_MAX_NOT_AVG = false;
+var file = "2340weightstest.txt";
+if(l.indexOf("file=")!=-1) file = l.substring(l.indexOf("file=")+5);
+var text;
+
+function go() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET",file);
+  xhr.onreadystatechange = function() {
+    if(this.readyState != 4) return;
+    text = this.responseText+"";
+    format();
+  };
+  xhr.send(undefined);
+}
+
+function format() {
+  text = text.substring(text.indexOf("Running with seed"));
+  text = text.split(/\.\d+\.\./).join('');
+  text = text.split(/Game\:\s\d+\.\n\n/).join('');
+  var currentline = 0, total = 0, linecount = 0, max = 0, score;
+  while((currentline = text.indexOf("...",currentline+1))!=-1) {
+    line = text.substring(currentline+3,text.indexOf('\n',currentline));
+    line = line.split('.').join("");
+    score = parseInt(line,10);
+    if(score>max) max=score;
+    total+=score;
+    linecount++;
+  }
+  text = "Number of Games Played:      "+linecount+"\n\nAverage Performance:         "+ (Math.round(100*total/linecount)/100)+"\nMaximum Performance:         "+max + "\n\nAverage Performance (Lines): "+ (Math.round(100*total/linecount/2.5)/100)+"\nMaximum Performance (Lines): "+(Math.round(max/2.5*100)/100) + "\n\n" +text;
+  display();
+}
+
+function display(str) {
+  str = str || text;
+  document.body.innerHTML = str.split("\n").join("<br>").split("  ").join("&nbsp;&nbsp;").split("<br> ").join("<br>&nbsp;");
+}
+</script></head><body onload="go();" style="font-family: monaco; font-size: 10px;">
+
+
+
+
+</body></html>
