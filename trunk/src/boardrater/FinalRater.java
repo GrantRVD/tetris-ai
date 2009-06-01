@@ -65,9 +65,14 @@ public class FinalRater extends BoardRater {
 //these weights have obtained 2.8 million, but averaged less than the above weights over the 5 seeded games.
  //public double[] coefficients = {0.8791266314811436, 0.12573951551431792, 0.24997483966927936, -0.37622392923737297, 0.3691940742930254, -0.15248712080838983, 0.47572218993649196, 0.5080173951623478, -0.17424868949023015, 0.3063003516304143, 0.20505056555309084, 1.2349924733759654, -0.004861089935609013};
 
-//these weights are also from gen. 64 of a second run of the genetic algorithm, starting with zeroes for all weights.
+//these weights are from gen. 64 of a second run of the genetic algorithm, starting with zeroes for all weights.
 //these weights have obtained 5.23 million, and averaged 2.34 million over the five seeded games. This is on par with Jamie Dellacherie's 2003 one-piece algorithm, which averages 1625000 pieces over many games! Must test these weights in one-ply games over many many seeds to see if these weights beat his algorithm!!
- public double[] coefficients = {0.41430724103382527, 0.04413383739389207, 0.1420172532064692, -0.13881428312611474, 0.22970827267905328, -0.052368130931930074, 0.5712789822642919, 0.2851778629665227, 0.041534211381371554, -0.011738293785449829, 0.241299661945633, 0.8292064267563932, -0.009937763420971586};
+//UPDATE: Ran these weights for 38 games in SingleBrainTest, and they averaged 2.3 million pieces over all 38 games, with the longest game reaching 12,689,477 pieces.
+ //public double[] coefficients = {0.41430724103382527, 0.04413383739389207, 0.1420172532064692, -0.13881428312611474, 0.22970827267905328, -0.052368130931930074, 0.5712789822642919, 0.2851778629665227, 0.041534211381371554, -0.011738293785449829, 0.241299661945633, 0.8292064267563932, -0.009937763420971586};
+
+//these weights are from gen. 89 of that same second run of the genetic algorithm, starting with zeroes for all weights.
+//In the genetic algorithm, these weights obtained 8,458,533 pieces in their longest game, and averaged 3,440,365 pieces over all five games.
+ public double[] coefficients = {0.3873903606334963, -0.04585633721581077, 0.09445581478240499, -0.07473365052873632, 0.07482815637667657, -0.11868667604426739, 0.4262318925468999, 0.3515108914987468, 0.34084080219176627, -0.09047581309278363, 0.27597446034724027, 0.8614281749606392, 0.03335335871335531};
 
 //these weights are obtained from testing a reckless 2-ply brain in the genetic algorithm for 100 generations ON A 6 BY 12 BOARD. 
 //these may or may not scale up to a 10x20 very well ;-)
