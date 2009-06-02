@@ -72,7 +72,11 @@ public class FinalRater extends BoardRater {
 
 //these weights are from gen. 89 of that same second run of the genetic algorithm, starting with zeroes for all weights.
 //In the genetic algorithm, these weights obtained 8,458,533 pieces in their longest game, and averaged 3,440,365 pieces over all five games.
- public double[] coefficients = {0.3873903606334963, -0.04585633721581077, 0.09445581478240499, -0.07473365052873632, 0.07482815637667657, -0.11868667604426739, 0.4262318925468999, 0.3515108914987468, 0.34084080219176627, -0.09047581309278363, 0.27597446034724027, 0.8614281749606392, 0.03335335871335531};
+ //public double[] coefficients = {0.3873903606334963, -0.04585633721581077, 0.09445581478240499, -0.07473365052873632, 0.07482815637667657, -0.11868667604426739, 0.4262318925468999, 0.3515108914987468, 0.34084080219176627, -0.09047581309278363, 0.27597446034724027, 0.8614281749606392, 0.03335335871335531};
+
+//these weights are from gen. 96 of that same second run of the genetic algorithm, starting with zeroes for all weights.
+//In the genetic algorithm, these weights obtained 19,361,344 pieces in their longest game, and averaged 5,861,089.2 pieces over all five games.
+ public double[] coefficients = {0.41430724103382527, 0.04413383739389207, 0.1420172532064692, -0.13881428312611474, 0.06887679285238696, -0.052368130931930074, 0.33235754477242435, 0.2851778629665227, -0.03011693088344261, -0.02534983335709433, 0.21155050264421074, 0.8292064267563932, 0.0038145282373974604};
 
 //these weights are obtained from testing a reckless 2-ply brain in the genetic algorithm for 100 generations ON A 6 BY 12 BOARD. 
 //these may or may not scale up to a 10x20 very well ;-)
