@@ -1,3 +1,5 @@
+//LOL, THIS RETURNS ALL ZEROS. so why are the weights all centering around a given value?!?!?!? it must mean the genetic algorithm SUCKS.
+
 package boardrater;
 
 import tetris.Board;
@@ -18,6 +20,7 @@ public class Trough extends BoardRater {
 			}
 			
 		}
+		System.out.println(troughCount);
 		return troughCount;
 	}
 
