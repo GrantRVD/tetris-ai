@@ -9,7 +9,7 @@ package tetris;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
-
+import boardrater.*;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 
@@ -21,7 +21,7 @@ import javax.swing.JCheckBox;
 public class JBrainTetris extends JTetris {
 	private static final long serialVersionUID = 1L;
 
-	private Brain mBrain = new Ply2Brain();
+	private Brain mBrain = new Ply1Brain();
 	private Move mMove;
 	protected javax.swing.Timer timerAI;
 	int current_count = -1;
@@ -29,7 +29,6 @@ public class JBrainTetris extends JTetris {
 	/** Creates new JBrainTetris */
 	public JBrainTetris(int width, int height) {
 		super(width, height);
-		
 		// Create the Timer object and have it send
 		// tick(DOWN) periodically
 		/*

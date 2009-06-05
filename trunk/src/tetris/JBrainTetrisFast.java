@@ -22,7 +22,7 @@ import javax.swing.JCheckBox;
 public class JBrainTetrisFast extends JTetrisFast {
 	private static final long serialVersionUID = 1L;
 
-	private Brain mBrain = new Ply1Brain();
+	private Brain mBrain = new Ply2Brain();
 	private Move mMove;
 	protected javax.swing.Timer timerAI;
 	int current_count = -1;
