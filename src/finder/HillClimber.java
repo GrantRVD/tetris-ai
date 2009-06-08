@@ -1,3 +1,4 @@
+package finder;
 public class HillClimber {
   
   public static void main(String[] args) {

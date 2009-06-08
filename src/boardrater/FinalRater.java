@@ -27,7 +27,6 @@ public class FinalRater extends BoardRater {
     new RowsWithHolesInMostHoledColumn(),
     new AverageSquaredTroughHeight(),
     new BlocksAboveHoles(),
-    new RowsWithHoles()
  };
  
 //these weights are hand-tuned only.
