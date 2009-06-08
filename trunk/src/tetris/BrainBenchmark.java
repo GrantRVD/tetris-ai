@@ -20,8 +20,8 @@ public class BrainBenchmark {
 
 	/* Add your yummy brains here NOM NOM NOM */
 	static Brain brainz[] = { 
-		new Ply1Brain(), 
-		//new Ply2Brain(),
+		//new Ply1Brain(), 
+		new Ply2Brain(),
 		//new PlyNBrain()
 	};
 
@@ -35,17 +35,17 @@ public class BrainBenchmark {
 		new HeightMinMax(),
 		new HeightStdDev(),
 		new HeightVar(),
-		new Lame(),
+		new Standard(),
 		new Leo1(),
 		new RowsWithHolesInMostHoledColumn(),
 		new SimpleHoles(),
 		new ThreeVariance(),
 		new Trough(),
 		new WeightedHoles(),
-		new FinalRater()
+		//new FinalRater()
 	};
 
-	static final int SAMPLE_SIZE = 5;
+	static final int SAMPLE_SIZE = 50;
 
 	BrainBenchmark() {
 	}
@@ -87,8 +87,8 @@ public class BrainBenchmark {
 
 				results[i][j] = new Result();
 				results[i][j].thinkTime = (new Date().getTime() - start.getTime());
-				results[i][j].brainName = brainz[i].toString();
-				results[i][j].raterName = raterz[j].toString();
+				results[i][j].brainName = brainz[i].toString()+" ";
+				results[i][j].raterName = raterz[j].toString()+ " ";
 				results[i][j].score = tc.count;
 			}}
 
@@ -107,7 +107,7 @@ public class BrainBenchmark {
 				sums[i][j] = new Result();
 		}
 
-		for (int seed = 0; seed < SAMPLE_SIZE; seed++) {
+		for (int seed = 0; seed <= SAMPLE_SIZE; seed++) {
 			System.out.println("Seed " + seed + " score time");
 
 			Result[][] results = bb.computeResults(seed);
@@ -131,8 +131,8 @@ public class BrainBenchmark {
 			for (int j = 0; j < sums[i].length; j++) {
 				System.out.println(
 						+ (sums[i][j].score / SAMPLE_SIZE) + " "
-						+ ((double) sums[i][j].score / sums[i][j].thinkTime)
-						+ sums[i][j].brainName + ":"+sums[i][j].raterName
+						//+ ((double) sums[i][j].score / sums[i][j].thinkTime)
+						//+ sums[i][j].brainName + ":"+sums[i][j].raterName
 				);
 			}
 		}

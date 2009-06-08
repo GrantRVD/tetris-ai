@@ -21,9 +21,9 @@ public class SingleBrainTest {
 	}
 
 	/* Add your yummy brain here NOM NOM NOM */
-	static Brain brain = new Ply1Brain();
+	static Brain brain = new Ply2Brain();
 
-	static int SAMPLE_SIZE = 1;
+	static int SAMPLE_SIZE = 3;
 
 	SingleBrainTest() {
 	}
