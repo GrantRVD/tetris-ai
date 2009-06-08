@@ -2,7 +2,7 @@ package boardrater;
 
 import tetris.Board;
 
-public class Lame extends BoardRater {
+public class Standard extends BoardRater {
 
 	/*
 	 A simple brain function.
