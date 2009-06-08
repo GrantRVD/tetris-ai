@@ -20,7 +20,7 @@ public class Trough extends BoardRater {
 			}
 			
 		}
-		System.out.println(troughCount);
+    // System.out.println(troughCount);
 		return troughCount;
 	}
 
